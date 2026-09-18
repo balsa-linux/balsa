@@ -180,10 +180,7 @@ fn fixtures_cover_every_kernel_filesystem_swap_and_encryption() {
         assert!(found, "no fixture uses kernel {want}");
     }
 
-    for fs in [
-        balsa_flakegen::plan::Filesystem::Btrfs,
-        balsa_flakegen::plan::Filesystem::Ext4,
-    ] {
+    for fs in balsa_flakegen::plan::Filesystem::ALL {
         assert!(
             plans.iter().any(|p| p.disk.filesystem == fs),
             "no fixture uses {fs:?}"
@@ -245,13 +242,33 @@ fn cachyos_fixtures_warn_and_others_stay_quiet() {
     }
 
     assert_eq!(compiles, vec!["gaming-cachyos-hyprland".to_string()]);
-    // Every CachyOS pick warns; the only other warning path is manual disko.
+    // Every CachyOS pick warns; the only other warning paths are manual disko and ZFS.
     for name in &cachyos {
         assert!(warns_at_all.contains(name), "{name} produced no warning");
     }
     let mut expected = cachyos;
     expected.push("plasma-manual-scheme-ext4".to_string());
+    expected.push("plasma-lts-zfs-encrypted".to_string());
     expected.sort();
     warns_at_all.sort();
     assert_eq!(warns_at_all, expected);
+}
+
+#[test]
+fn zfs_requires_a_well_formed_host_id() {
+    let path =
+        Path::new(env!("CARGO_MANIFEST_DIR")).join("test-plans/plasma-lts-zfs-encrypted.toml");
+    let mut plan = load(&path);
+    assert!(plan.validate().is_ok());
+
+    plan.network.host_id = None;
+    let errs = plan.validate().unwrap_err();
+    assert!(
+        errs.iter().any(|e| e.contains("needs network.host_id")),
+        "{errs:?}"
+    );
+
+    plan.network.host_id = Some("not-hex!".to_string());
+    let errs = plan.validate().unwrap_err();
+    assert!(errs.iter().any(|e| e.contains("8 hex digits")), "{errs:?}");
 }

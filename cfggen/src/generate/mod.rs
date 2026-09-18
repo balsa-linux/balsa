@@ -116,6 +116,14 @@ pub fn generate(plan: &BalsaInstallPlan) -> Result<GenerationResult, Error> {
         );
     }
 
+    if plan.disk.filesystem == Filesystem::Zfs {
+        warnings.push(
+            "ZFS: run `zpool export zroot` after installing. The pool is created under the \
+             installer's hostId, and the installed system will not force-import it at boot."
+                .to_string(),
+        );
+    }
+
     let has_nvidia = plan
         .hardware
         .gpu
@@ -139,7 +147,8 @@ pub fn generate(plan: &BalsaInstallPlan) -> Result<GenerationResult, Error> {
             "swapfile_path",
             &match plan.disk.filesystem {
                 Filesystem::Btrfs => "/swap/swapfile",
-                Filesystem::Ext4 => "/swapfile",
+                Filesystem::Ext4 | Filesystem::Xfs => "/swapfile",
+                Filesystem::Zfs => unreachable!("validate() rejects file swap on ZFS"),
             },
         );
     }

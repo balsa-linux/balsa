@@ -95,13 +95,13 @@ fn bad_disko_input_is_rejected() {
         );
     }
 
-    let xfs = cli(&[
-        "disko", "--disk", "/dev/sda", "--fs", "xfs", "--swap", "none", "--out", out,
+    let ntfs = cli(&[
+        "disko", "--disk", "/dev/sda", "--fs", "ntfs", "--swap", "none", "--out", out,
     ]);
     assert!(
-        stderr(&xfs).contains("invalid value 'xfs'"),
+        stderr(&ntfs).contains("invalid value 'ntfs'"),
         "{}",
-        stderr(&xfs)
+        stderr(&ntfs)
     );
 
     let relative = cli(&[
@@ -118,4 +118,66 @@ fn bad_disko_input_is_rejected() {
     let bare = cli(&[]);
     assert!(!bare.status.success(), "no arguments should fail");
     assert!(stderr(&bare).contains("--plan"));
+}
+
+#[test]
+fn disko_subcommand_handles_xfs_and_zfs() {
+    let xfs_out = out_dir("xfs");
+    let o = cli(&[
+        "disko",
+        "--disk",
+        "/dev/sda",
+        "--fs",
+        "xfs",
+        "--swap",
+        "none",
+        "--out",
+        xfs_out.to_str().unwrap(),
+    ]);
+    assert!(o.status.success(), "{}", stderr(&o));
+    let nix = fs::read_to_string(xfs_out.join("disko-config.nix")).unwrap();
+    assert!(nix.contains(r#"format = "xfs";"#), "{nix}");
+
+    let zfs_out = out_dir("zfs");
+    let o = cli(&[
+        "disko",
+        "--disk",
+        "/dev/sda",
+        "--fs",
+        "zfs",
+        "--swap",
+        "zram",
+        "--out",
+        zfs_out.to_str().unwrap(),
+    ]);
+    assert!(o.status.success(), "{}", stderr(&o));
+    let nix = fs::read_to_string(zfs_out.join("disko-config.nix")).unwrap();
+    for want in [
+        r#"pool = "zroot";"#,
+        "disko.devices.zpool.zroot",
+        r#"mountpoint = "/home";"#,
+    ] {
+        assert!(nix.contains(want), "missing {want} in:\n{nix}");
+    }
+
+    let rejected = out_dir("zfs-swapfile");
+    let o = cli(&[
+        "disko",
+        "--disk",
+        "/dev/sda",
+        "--fs",
+        "zfs",
+        "--swap",
+        "file",
+        "--swap-size-gib",
+        "4",
+        "--out",
+        rejected.to_str().unwrap(),
+    ]);
+    assert!(!o.status.success());
+    assert!(
+        stderr(&o).contains("ZFS cannot host a swap file"),
+        "{}",
+        stderr(&o)
+    );
 }

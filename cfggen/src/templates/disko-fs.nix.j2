@@ -21,8 +21,11 @@
                 };
 {%- endif %}
               };
+{%- elif disk.filesystem == "zfs" %}
+              type = "zfs";
+              pool = "zroot";
 {%- else %}
               type = "filesystem";
-              format = "ext4";
+              format = "{{ disk.filesystem }}";
               mountpoint = "/";
 {%- endif %}

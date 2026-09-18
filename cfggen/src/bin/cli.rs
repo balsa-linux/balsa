@@ -60,6 +60,8 @@ struct DiskoArgs {
 enum FsArg {
     Btrfs,
     Ext4,
+    Xfs,
+    Zfs,
 }
 
 #[derive(Clone, ValueEnum)]
@@ -126,6 +128,8 @@ fn run_disko(args: DiskoArgs) -> Result<(), String> {
         filesystem: match args.filesystem {
             FsArg::Btrfs => Filesystem::Btrfs,
             FsArg::Ext4 => Filesystem::Ext4,
+            FsArg::Xfs => Filesystem::Xfs,
+            FsArg::Zfs => Filesystem::Zfs,
         },
         swap,
         encryption: args

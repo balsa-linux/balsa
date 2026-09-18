@@ -73,6 +73,18 @@ pub enum PartitionScheme {
 pub enum Filesystem {
     Btrfs,
     Ext4,
+    Xfs,
+    /// Single-disk pool named `zroot`. Needs `network.host_id`.
+    Zfs,
+}
+
+impl Filesystem {
+    pub const ALL: [Filesystem; 4] = [
+        Filesystem::Btrfs,
+        Filesystem::Ext4,
+        Filesystem::Xfs,
+        Filesystem::Zfs,
+    ];
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -185,6 +197,9 @@ pub enum FirmwareMode {
 pub struct NetworkConfig {
     pub hostname: String,
     pub backend: NetworkBackend,
+    /// `networking.hostId`, 8 hex digits. Required by ZFS.
+    #[serde(default)]
+    pub host_id: Option<String>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -461,6 +476,15 @@ impl BalsaInstallPlan {
                 self.disk.filesystem
             ));
         }
+        match &self.network.host_id {
+            Some(id) if id.len() != 8 || !id.chars().all(|c| c.is_ascii_hexdigit()) => {
+                errs.push(format!("host_id {id:?} must be exactly 8 hex digits"));
+            }
+            None if self.disk.filesystem == Filesystem::Zfs => {
+                errs.push("ZFS needs network.host_id (networking.hostId)".to_string());
+            }
+            _ => {}
+        }
         if let Err(mut disk_errs) = self.disk.validate() {
             errs.append(&mut disk_errs);
         }
@@ -486,6 +510,9 @@ impl DiskoConfig {
                     .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_'))
         {
             errs.push(format!("invalid luks_name {:?}", enc.luks_name));
+        }
+        if self.filesystem == Filesystem::Zfs && matches!(self.swap, SwapMode::File { .. }) {
+            errs.push("ZFS cannot host a swap file; use partition or zram swap".to_string());
         }
         if let SwapMode::Partition { size_gib: 0 } | SwapMode::File { size_gib: 0 } = self.swap {
             errs.push("swap size_gib must be at least 1".to_string());

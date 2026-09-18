@@ -1,0 +1,50 @@
+desktop = "plasma"
+tuning_profile = "standard"
+
+[locale]
+locale = "en_US.UTF-8"
+keymap = "us"
+timezone = "America/New_York"
+
+[disk]
+disk = "/dev/vda"
+filesystem = "zfs"
+
+[disk.encryption]
+luks_name = "cryptroot"
+
+[disk.scheme]
+type = "guided"
+
+[disk.swap]
+type = "partition"
+size_gib = 8
+
+[boot]
+loader = "systemd-boot"
+dual_boot = false
+legacy_bios = false
+
+[hardware]
+arch = "x86_64-linux"
+cpu = "intel"
+gpu = ["nvidia-proprietary"]
+firmware = "auto"
+
+[network]
+hostname = "plasma-lts-zfs-encrypted"
+host_id = "8425e349"
+backend = "network-manager"
+
+[kernel]
+type = "lts"
+
+
+[accounts]
+root_enabled = true
+root_hashed_password = "$6$rvLVnhCHCaTgWmGH$xJvRfxD3tKxGIOKtyyJrz14ZxDJZ1BWoqTQBpwb7DAyZeGkT8F.HQoOwvQLnkmXmHnkH3V0k6h8AnqZmvHSsF."
+
+[accounts.primary]
+username = "balsa"
+full_name = "Balsa Test User"
+hashed_password = "$6$rvLVnhCHCaTgWmGH$xJvRfxD3tKxGIOKtyyJrz14ZxDJZ1BWoqTQBpwb7DAyZeGkT8F.HQoOwvQLnkmXmHnkH3V0k6h8AnqZmvHSsF."

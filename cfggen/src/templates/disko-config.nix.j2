@@ -57,5 +57,22 @@
       };
     };
   };
+{%- if disk.filesystem == "zfs" %}
+  disko.devices.zpool.zroot = {
+    type = "zpool";
+    rootFsOptions.compression = "zstd";
+    mountpoint = "/";
+    datasets = {
+      home = {
+        type = "zfs_fs";
+        mountpoint = "/home";
+      };
+      nix = {
+        type = "zfs_fs";
+        mountpoint = "/nix";
+      };
+    };
+  };
+{%- endif %}
 {%- endif %}
 }

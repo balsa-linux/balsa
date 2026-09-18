@@ -34,3 +34,7 @@
   boot.loader.efi.efiSysMountPoint = "{{ boot.esp_mount | nix }}";
 {%- endif %}
 {%- endif %}
+{%- if disk.filesystem == "zfs" %}
+  # nixpkgs' upcoming default; forced import risks importing a pool another system is using.
+  boot.zfs.forceImportRoot = false;
+{%- endif %}
