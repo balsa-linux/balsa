@@ -1,0 +1,44 @@
+desktop = "openbox"
+tuning_profile = "lightweight"
+
+[locale]
+locale = "en_US.UTF-8"
+keymap = "us"
+timezone = "America/New_York"
+
+[disk]
+disk = "/dev/vda"
+filesystem = "ext4"
+
+[disk.scheme]
+type = "guided"
+
+[disk.swap]
+type = "none"
+
+[boot]
+loader = "grub"
+dual_boot = false
+legacy_bios = true
+
+[hardware]
+arch = "x86_64-linux"
+cpu = "intel"
+gpu = ["intel"]
+firmware = "auto"
+
+[network]
+hostname = "openbox-lts-ext4-legacybios"
+backend = "network-manager"
+
+[kernel]
+type = "lts"
+
+
+[accounts]
+root_enabled = false
+
+[accounts.primary]
+username = "balsa"
+full_name = "Balsa Test User"
+hashed_password = "$6$rvLVnhCHCaTgWmGH$xJvRfxD3tKxGIOKtyyJrz14ZxDJZ1BWoqTQBpwb7DAyZeGkT8F.HQoOwvQLnkmXmHnkH3V0k6h8AnqZmvHSsF."

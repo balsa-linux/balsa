@@ -1,0 +1,41 @@
+{ config, lib, pkgs, inputs, ... }:
+
+# One module attrset per fragment, so two concerns can set the same option.
+{
+  config = lib.mkMerge [
+    {
+{% include "locale.nix.j2" %}
+    }
+    {
+{% include "boot.nix.j2" %}
+    }
+    {
+{% include "kernel.nix.j2" %}
+    }
+    {
+{% include "hardware.nix.j2" %}
+    }
+    {
+{% include "network.nix.j2" %}
+    }
+    {
+{% include "desktop.nix.j2" %}
+    }
+    {
+{% include "login.nix.j2" %}
+    }
+    {
+{% include "accounts.nix.j2" %}
+    }
+    {
+{% include "swap.nix.j2" %}
+    }
+    {
+{% include "tuning.nix.j2" %}
+    }
+    {
+      nix.settings.experimental-features = [ "nix-command" "flakes" ];
+      system.stateVersion = "{{ state_version | nix }}";
+    }
+  ];
+}

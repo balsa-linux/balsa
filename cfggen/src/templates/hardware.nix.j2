@@ -1,0 +1,25 @@
+{%- if hardware.cpu == "intel" %}
+  hardware.cpu.intel.updateMicrocode = true;
+{%- elif hardware.cpu == "amd" %}
+  hardware.cpu.amd.updateMicrocode = true;
+{%- endif %}
+{%- if hardware.firmware == "auto" %}
+  hardware.enableRedistributableFirmware = true;
+{%- elif hardware.firmware == "all" %}
+  hardware.enableAllFirmware = true;
+{%- endif %}
+  hardware.graphics.enable = true;
+{%- if has_nvidia %}
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.nvidia = {
+    modesetting.enable = true;
+    open = {{ nvidia_open }};
+    nvidiaSettings = true;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
+  };
+{%- elif "nouveau" in hardware.gpu %}
+  services.xserver.videoDrivers = [ "nouveau" ];
+{%- endif %}
+{%- if allow_unfree %}
+  nixpkgs.config.allowUnfree = true;
+{%- endif %}

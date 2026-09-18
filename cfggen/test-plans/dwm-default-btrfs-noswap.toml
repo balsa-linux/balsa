@@ -1,0 +1,45 @@
+desktop = "dwm"
+tuning_profile = "lightweight"
+login_manager = "sddm"
+
+[locale]
+locale = "en_US.UTF-8"
+keymap = "us"
+timezone = "America/New_York"
+
+[disk]
+disk = "/dev/vda"
+filesystem = "btrfs"
+
+[disk.scheme]
+type = "guided"
+
+[disk.swap]
+type = "none"
+
+[boot]
+loader = "systemd-boot"
+dual_boot = false
+legacy_bios = false
+
+[hardware]
+arch = "x86_64-linux"
+cpu = "intel"
+gpu = ["intel"]
+firmware = "auto"
+
+[network]
+hostname = "dwm-default-btrfs-noswap"
+backend = "network-manager"
+
+[kernel]
+type = "default"
+
+
+[accounts]
+root_enabled = false
+
+[accounts.primary]
+username = "balsa"
+full_name = "Balsa Test User"
+hashed_password = "$6$rvLVnhCHCaTgWmGH$xJvRfxD3tKxGIOKtyyJrz14ZxDJZ1BWoqTQBpwb7DAyZeGkT8F.HQoOwvQLnkmXmHnkH3V0k6h8AnqZmvHSsF."

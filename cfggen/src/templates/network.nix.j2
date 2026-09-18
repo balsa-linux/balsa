@@ -1,0 +1,7 @@
+  networking.hostName = "{{ network.hostname | nix }}";
+{%- if network.backend == "network-manager" %}
+  networking.networkmanager.enable = true;
+{%- elif network.backend == "systemd-networkd" %}
+  networking.useNetworkd = true;
+  networking.useDHCP = lib.mkDefault true;
+{%- endif %}

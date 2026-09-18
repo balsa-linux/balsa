@@ -1,0 +1,4 @@
+  time.timeZone = "{{ locale.timezone | nix }}";
+  i18n.defaultLocale = "{{ locale.locale | nix }}";
+  console.keyMap = "{{ locale.keymap | nix }}";
+  services.xserver.xkb.layout = "{{ locale.keymap | nix }}";

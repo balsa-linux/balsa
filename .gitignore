@@ -1,0 +1,8 @@
+.idea/
+
+# nix build output symlinks
+result
+result-*
+
+# disk images from nixos-rebuild build-vm / ISO testing
+*.qcow2

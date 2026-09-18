@@ -1,0 +1,51 @@
+{%- if needs_xserver %}
+  services.xserver.enable = true;
+{%- endif %}
+{%- if desktop == "plasma" %}
+  services.desktopManager.plasma6.enable = true;
+{%- elif desktop == "gnome" %}
+  services.desktopManager.gnome.enable = true;
+{%- elif desktop == "xfce" %}
+  services.xserver.desktopManager.xfce.enable = true;
+{%- elif desktop == "cinnamon" %}
+  services.xserver.desktopManager.cinnamon.enable = true;
+{%- elif desktop == "mate" %}
+  services.xserver.desktopManager.mate.enable = true;
+{%- elif desktop == "cosmic" %}
+  services.desktopManager.cosmic.enable = true;
+{%- elif desktop == "wayfire" %}
+  programs.wayfire.enable = true;
+{%- elif desktop == "openbox" %}
+  services.xserver.windowManager.openbox.enable = true;
+{%- elif desktop == "budgie" %}
+  services.xserver.desktopManager.budgie.enable = true;
+{%- elif desktop == "lxqt" %}
+  services.xserver.desktopManager.lxqt.enable = true;
+{%- elif desktop == "fluxbox" %}
+  services.xserver.windowManager.fluxbox.enable = true;
+{%- elif desktop == "enlightenment" %}
+  services.xserver.desktopManager.enlightenment.enable = true;
+{%- elif desktop == "labwc" %}
+  programs.labwc.enable = true;
+{%- elif desktop == "pantheon" %}
+  services.desktopManager.pantheon.enable = true;
+{%- elif desktop == "niri" %}
+  programs.niri.enable = true;
+{%- elif desktop == "mango" %}
+  environment.systemPackages = [ pkgs.mango ];
+{%- elif desktop == "hyprland" %}
+  programs.hyprland.enable = true;
+{%- elif desktop == "i3" %}
+  services.xserver.windowManager.i3.enable = true;
+{%- elif desktop == "sway" %}
+  programs.sway.enable = true;
+{%- elif desktop == "bspwm" %}
+  services.xserver.windowManager.bspwm.enable = true;
+{%- elif desktop == "xmonad" %}
+  services.xserver.windowManager.xmonad.enable = true;
+{%- elif desktop == "dwm" %}
+  services.xserver.windowManager.dwm.enable = true;
+{%- endif %}
+{%- if desktop_is_tiling %}
+  security.polkit.enable = true;
+{%- endif %}

@@ -1,0 +1,54 @@
+desktop = "niri"
+tuning_profile = "gaming"
+
+[locale]
+locale = "en_US.UTF-8"
+keymap = "us"
+timezone = "America/New_York"
+
+[disk]
+disk = "/dev/vda"
+filesystem = "btrfs"
+
+[disk.encryption]
+luks_name = "cryptroot"
+
+[disk.scheme]
+type = "guided"
+
+[disk.swap]
+type = "zram"
+
+[boot]
+loader = "systemd-boot"
+dual_boot = false
+legacy_bios = false
+
+[hardware]
+arch = "x86_64-linux"
+cpu = "amd"
+gpu = ["amd"]
+firmware = "auto"
+
+[network]
+hostname = "niri-cachyos-btrfs-encrypted"
+backend = "network-manager"
+
+[kernel]
+type = "cachy-os"
+variant = "latest"
+nixpkgs_policy = "pinned"
+
+# From the xddxdd/nix-cachyos-kernel README and flake nixConfig.
+[kernel.cache]
+substituter = "https://attic.xuyh0120.win/lantian"
+trusted_public_key = "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+
+
+[accounts]
+root_enabled = false
+
+[accounts.primary]
+username = "balsa"
+full_name = "Balsa Test User"
+hashed_password = "$6$rvLVnhCHCaTgWmGH$xJvRfxD3tKxGIOKtyyJrz14ZxDJZ1BWoqTQBpwb7DAyZeGkT8F.HQoOwvQLnkmXmHnkH3V0k6h8AnqZmvHSsF."

@@ -1,0 +1,13 @@
+  users.mutableUsers = false;
+  users.users.{{ accounts.primary.username }} = {
+    isNormalUser = true;
+    description = "{{ accounts.primary.full_name | nix }}";
+    hashedPassword = "{{ accounts.primary.hashed_password | nix }}";
+    extraGroups = [ "wheel" "video" "audio" ];
+  };
+{%- if accounts.root_enabled %}
+  users.users.root.hashedPassword = "{{ accounts.root_hashed_password | nix }}";
+{%- else %}
+  users.users.root.hashedPassword = "!";
+{%- endif %}
+  security.sudo.wheelNeedsPassword = true;

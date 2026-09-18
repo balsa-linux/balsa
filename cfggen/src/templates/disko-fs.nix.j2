@@ -1,0 +1,28 @@
+{%- if disk.filesystem == "btrfs" %}
+              type = "btrfs";
+              extraArgs = [ "-f" ];
+              subvolumes = {
+                "/root" = {
+                  mountpoint = "/";
+                  mountOptions = [ "compress=zstd" "noatime" ];
+                };
+                "/home" = {
+                  mountpoint = "/home";
+                  mountOptions = [ "compress=zstd" "noatime" ];
+                };
+                "/nix" = {
+                  mountpoint = "/nix";
+                  mountOptions = [ "compress=zstd" "noatime" ];
+                };
+{%- if disk.swap.type == "file" %}
+                "/swap" = {
+                  mountpoint = "/swap";
+                  mountOptions = [ "noatime" ];
+                };
+{%- endif %}
+              };
+{%- else %}
+              type = "filesystem";
+              format = "ext4";
+              mountpoint = "/";
+{%- endif %}

@@ -1,0 +1,21 @@
+{%- if login == "sddm" %}
+  services.displayManager.sddm.enable = true;
+  services.displayManager.sddm.wayland.enable = true;
+{%- elif login == "gdm" %}
+  services.displayManager.gdm.enable = true;
+{%- elif login == "plasma-login-manager" %}
+  services.displayManager.plasma-login-manager.enable = true;
+{%- elif login == "greetd" %}
+  services.greetd = {
+    enable = true;
+    settings.default_session.command = "${pkgs.tuigreet}/bin/tuigreet --time --remember";
+  };
+{%- elif login == "ly" %}
+  services.displayManager.ly.enable = true;
+{%- elif login == "regreet" %}
+  programs.regreet.enable = true;
+{%- elif login == "lemurs" %}
+  services.displayManager.lemurs.enable = true;
+{%- elif login == "cosmic-greeter" %}
+  services.displayManager.cosmic-greeter.enable = true;
+{%- endif %}

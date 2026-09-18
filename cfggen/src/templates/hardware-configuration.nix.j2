@@ -1,0 +1,26 @@
+# Stands in for nixos-generate-config; disko owns the filesystems.
+{ config, lib, modulesPath, ... }:
+
+{
+  imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
+
+  boot.initrd.availableKernelModules = [
+    "xhci_pci"
+    "ahci"
+    "nvme"
+    "usbhid"
+    "usb_storage"
+    "sd_mod"
+  ];
+  boot.initrd.kernelModules = [ ];
+{%- if hardware.cpu == "intel" %}
+  boot.kernelModules = [ "kvm-intel" ];
+{%- elif hardware.cpu == "amd" %}
+  boot.kernelModules = [ "kvm-amd" ];
+{%- else %}
+  boot.kernelModules = [ ];
+{%- endif %}
+  boot.extraModulePackages = [ ];
+
+  nixpkgs.hostPlatform = lib.mkDefault "{{ hardware.arch }}";
+}

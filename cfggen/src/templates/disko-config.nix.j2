@@ -1,0 +1,61 @@
+{
+{%- if disk.scheme.type == "manual" %}
+  disko.devices = {
+{{ disk.scheme.devices }}
+  };
+{%- else %}
+  disko.devices.disk.main = {
+    device = "{{ disk.disk | nix }}";
+    type = "disk";
+    content = {
+      type = "gpt";
+      partitions = {
+{%- if legacy_bios %}
+        bios = {
+          priority = 1;
+          size = "1M";
+          type = "EF02";
+        };
+{%- endif %}
+        ESP = {
+          priority = 2;
+          size = "1G";
+          type = "EF00";
+          content = {
+            type = "filesystem";
+            format = "vfat";
+            mountpoint = "{{ esp_mount | nix }}";
+            mountOptions = [ "umask=0077" ];
+          };
+        };
+{%- if disk.swap.type == "partition" %}
+        swap = {
+          priority = 3;
+          size = "{{ disk.swap.size_gib }}G";
+          content = {
+            type = "swap";
+          };
+        };
+{%- endif %}
+        root = {
+          priority = 4;
+          size = "100%";
+          content = {
+{%- if disk.encryption %}
+            type = "luks";
+            name = "{{ disk.encryption.luks_name | nix }}";
+            passwordFile = "/tmp/disko-password";
+            settings.allowDiscards = true;
+            content = {
+{% include "disko-fs.nix.j2" %}
+            };
+{%- else %}
+{% include "disko-fs.nix.j2" %}
+{%- endif %}
+          };
+        };
+      };
+    };
+  };
+{%- endif %}
+}

@@ -1,0 +1,11 @@
+{%- if kernel.type == "default" %}
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+{%- elif kernel.type == "lts" %}
+  boot.kernelPackages = pkgs.linuxPackages;
+{%- elif kernel.type == "zen" %}
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+{%- elif kernel.type == "xanmod" %}
+  boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
+{%- elif kernel.type == "cachy-os" %}
+{% include "cachyos.nix.j2" %}
+{%- endif %}

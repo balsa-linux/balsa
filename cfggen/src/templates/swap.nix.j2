@@ -1,0 +1,5 @@
+{%- if disk.swap.type == "zram" %}
+  zramSwap.enable = true;
+{%- elif disk.swap.type == "file" %}
+  swapDevices = [ { device = "{{ swapfile_path }}"; size = {{ swapfile_mib }}; } ];
+{%- endif %}

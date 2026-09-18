@@ -1,0 +1,5 @@
+  nixpkgs.overlays = [ inputs.cachyos-kernel.overlays.{{ cachyos.overlay_attr }} ];
+  boot.kernelPackages = {{ cachyos.packages_attr }};
+
+  nix.settings.extra-substituters = [ "{{ cachyos.substituter | nix }}" ];
+  nix.settings.extra-trusted-public-keys = [ "{{ cachyos.trusted_public_key | nix }}" ];

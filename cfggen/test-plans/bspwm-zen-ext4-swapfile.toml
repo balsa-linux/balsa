@@ -1,0 +1,46 @@
+desktop = "bspwm"
+tuning_profile = "creative"
+login_manager = "lemurs"
+
+[locale]
+locale = "en_US.UTF-8"
+keymap = "us"
+timezone = "America/New_York"
+
+[disk]
+disk = "/dev/vda"
+filesystem = "ext4"
+
+[disk.scheme]
+type = "guided"
+
+[disk.swap]
+type = "file"
+size_gib = 2
+
+[boot]
+loader = "systemd-boot"
+dual_boot = false
+legacy_bios = false
+
+[hardware]
+arch = "x86_64-linux"
+cpu = "amd"
+gpu = ["amd"]
+firmware = "auto"
+
+[network]
+hostname = "bspwm-zen-ext4-swapfile"
+backend = "network-manager"
+
+[kernel]
+type = "zen"
+
+
+[accounts]
+root_enabled = false
+
+[accounts.primary]
+username = "balsa"
+full_name = "Balsa Test User"
+hashed_password = "$6$rvLVnhCHCaTgWmGH$xJvRfxD3tKxGIOKtyyJrz14ZxDJZ1BWoqTQBpwb7DAyZeGkT8F.HQoOwvQLnkmXmHnkH3V0k6h8AnqZmvHSsF."
