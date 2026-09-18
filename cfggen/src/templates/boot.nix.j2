@@ -37,4 +37,6 @@
 {%- if disk.filesystem == "zfs" %}
   # nixpkgs' upcoming default; forced import risks importing a pool another system is using.
   boot.zfs.forceImportRoot = false;
+  # The by-id default is empty for some disks (e.g. virtio without a serial); disko's GPT always has partuuids.
+  boot.zfs.devNodes = "/dev/disk/by-partuuid";
 {%- endif %}
