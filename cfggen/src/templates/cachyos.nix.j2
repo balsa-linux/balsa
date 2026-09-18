@@ -3,3 +3,7 @@
 
   nix.settings.extra-substituters = [ "{{ cachyos.substituter | nix }}" ];
   nix.settings.extra-trusted-public-keys = [ "{{ cachyos.trusted_public_key | nix }}" ];
+{%- if disk.filesystem == "zfs" %}
+  # CachyOS-patched ZFS; the generic nixpkgs module is not in any binary cache for these kernels.
+  boot.zfs.package = config.boot.kernelPackages.zfs_cachyos;
+{%- endif %}
