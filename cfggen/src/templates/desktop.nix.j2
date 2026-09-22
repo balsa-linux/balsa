@@ -29,24 +29,34 @@
   programs.labwc.enable = true;
 {%- elif desktop == "pantheon" %}
   services.desktopManager.pantheon.enable = true;
+{#- Tiling WMs also get what their default configs launch; sway's and i3's modules already ship it. #}
 {%- elif desktop == "niri" %}
   programs.niri.enable = true;
   # X11 apps run through xwayland-satellite, which niri spawns from PATH.
-  environment.systemPackages = [ pkgs.xwayland-satellite ];
+  environment.systemPackages = with pkgs; [ xwayland-satellite alacritty fuzzel swaylock ];
 {%- elif desktop == "mango" %}
-  environment.systemPackages = [ pkgs.mango ];
+  environment.systemPackages = with pkgs; [ mango foot rofi ];
 {%- elif desktop == "hyprland" %}
   programs.hyprland.enable = true;
+  environment.systemPackages = with pkgs; [ kitty kdePackages.dolphin hyprlauncher ];
 {%- elif desktop == "i3" %}
   services.xserver.windowManager.i3.enable = true;
 {%- elif desktop == "sway" %}
   programs.sway.enable = true;
 {%- elif desktop == "bspwm" %}
-  services.xserver.windowManager.bspwm.enable = true;
+  services.xserver.windowManager.bspwm = {
+    enable = true;
+    # Both default to missing $HOME files, leaving no keybindings; use bspwm's packaged examples.
+    configFile = "${pkgs.bspwm}/share/doc/bspwm/examples/bspwmrc";
+    sxhkd.configFile = "${pkgs.bspwm}/share/doc/bspwm/examples/sxhkdrc";
+  };
+  environment.systemPackages = with pkgs; [ rxvt-unicode dmenu ];
 {%- elif desktop == "xmonad" %}
   services.xserver.windowManager.xmonad.enable = true;
+  environment.systemPackages = [ pkgs.dmenu ];
 {%- elif desktop == "dwm" %}
   services.xserver.windowManager.dwm.enable = true;
+  environment.systemPackages = with pkgs; [ st dmenu ];
 {%- endif %}
 {%- if desktop_is_tiling %}
   security.polkit.enable = true;
