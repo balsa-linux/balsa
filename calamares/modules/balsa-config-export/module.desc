@@ -1,0 +1,5 @@
+---
+type: job
+name: balsa-config-export
+interface: python
+script: main.py

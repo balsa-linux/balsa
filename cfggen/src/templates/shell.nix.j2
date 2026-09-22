@@ -1,0 +1,16 @@
+  # programs.zsh alone installs zsh without making it anyone's login shell.
+  users.defaultUserShell = pkgs.zsh;
+
+  programs.zsh = {
+    enable = true;
+
+    ohMyZsh = {
+      enable = true;
+      theme = "bira";
+      plugins = [ "git" "sudo" "docker" ];
+    };
+
+    # The NixOS modules, not oh-my-zsh plugins, so they come from nixpkgs.
+    autosuggestions.enable = true;
+    syntaxHighlighting.enable = true;
+  };

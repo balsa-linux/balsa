@@ -6,3 +6,6 @@ result-*
 
 # disk images from nixos-rebuild build-vm / ISO testing
 *.qcow2
+
+# python bytecode from running the calamares job modules locally
+__pycache__/

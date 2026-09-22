@@ -1,0 +1,5 @@
+---
+type: job
+name: balsa-apply
+interface: python
+script: main.py

@@ -1,0 +1,5 @@
+---
+type: job
+name: balsa-disko
+interface: python
+script: main.py

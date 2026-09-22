@@ -14,7 +14,7 @@
   };
 
   outputs = inputs@{ self, nixpkgs, disko, ... }: {
-    nixosConfigurations.test = nixpkgs.lib.nixosSystem {
+    nixosConfigurations."{{ network.hostname | nix }}" = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; };
       modules = [
         disko.nixosModules.disko

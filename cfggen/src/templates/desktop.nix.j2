@@ -31,6 +31,8 @@
   services.desktopManager.pantheon.enable = true;
 {%- elif desktop == "niri" %}
   programs.niri.enable = true;
+  # X11 apps run through xwayland-satellite, which niri spawns from PATH.
+  environment.systemPackages = [ pkgs.xwayland-satellite ];
 {%- elif desktop == "mango" %}
   environment.systemPackages = [ pkgs.mango ];
 {%- elif desktop == "hyprland" %}

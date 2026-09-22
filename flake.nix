@@ -11,7 +11,7 @@
   outputs = { self, nixpkgs, disko, cachyos-kernel, ... }: {
     nixosConfigurations.iso = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
-      specialArgs = { inherit self; };
+      specialArgs = { inherit self disko; };
       modules = [
         ./iso/default.nix
         disko.nixosModules.disko

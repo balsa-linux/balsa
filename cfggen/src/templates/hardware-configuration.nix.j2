@@ -11,6 +11,10 @@
     "usbhid"
     "usb_storage"
     "sd_mod"
+    # From nixos-generate-config's qemu-guest profile; a VM initrd needs them to see its disk.
+    "virtio_pci"
+    "virtio_blk"
+    "virtio_scsi"
   ];
   boot.initrd.kernelModules = [ ];
 {%- if hardware.cpu == "intel" %}

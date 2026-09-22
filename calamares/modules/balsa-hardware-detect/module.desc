@@ -1,0 +1,5 @@
+---
+type: job
+name: balsa-hardware-detect
+interface: python
+script: main.py

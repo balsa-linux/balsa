@@ -1,0 +1,38 @@
+---
+componentName: balsa
+
+welcomeStyleCalamares: false
+welcomeExpandingLogo: true
+
+windowExpanding: normal
+windowSize: 900px,560px
+windowPlacement: center
+
+sidebar: widget
+navigation: widget
+
+strings:
+    productName:         "balsa"
+    shortProductName:    "balsa"
+    version:             "27.0"
+    shortVersion:        "27"
+    versionedName:       "balsa 27.0"
+    shortVersionedName:  "balsa 27"
+    bootloaderEntryName: "Balsa"
+    productUrl:          "https://balsa.aylah.dev"
+    supportUrl:          "https://github.com/balsa-linux/balsa/issues"
+    knownIssuesUrl:      "https://github.com/balsa-linux/balsa/issues"
+    releaseNotesUrl:     "https://github.com/balsa-linux/balsa/releases"
+
+images:
+    productLogo:   "logo.png"
+    productIcon:   "logo.png"
+    productWelcome: "welcome.png"
+
+slideshow: "slideshow.qml"
+slideshowAPI: 2
+
+style:
+    SidebarBackground:         "#1f1f1f"
+    SidebarText:               "#e6e6e6"
+    SidebarTextCurrent:        "#2f2f2f"

@@ -1,0 +1,5 @@
+---
+type: job
+name: balsa-install
+interface: python
+script: main.py

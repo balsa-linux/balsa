@@ -61,7 +61,7 @@ impl NixSandbox {
         NixSandbox { name }
     }
 
-    /// Instantiates the generated system without building it. If fails, returns output
+    /// Dry-run builds a fixture's system; the fixture name is also its hostname and flake attribute.
     fn instantiate(&self, fixture: &str) -> Result<(), String> {
         let out = Command::new("podman")
             .args([
@@ -75,7 +75,7 @@ impl NixSandbox {
                 "build",
                 "--dry-run",
                 "--no-link",
-                ".#nixosConfigurations.test.config.system.build.toplevel",
+                &format!(".#nixosConfigurations.\"{fixture}\".config.system.build.toplevel"),
             ])
             .output()
             .map_err(|e| format!("could not run podman: {e}"))?;

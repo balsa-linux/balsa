@@ -34,6 +34,9 @@
 {% include "tuning.nix.j2" %}
     }
     {
+{% include "shell.nix.j2" %}
+    }
+    {
       nix.settings.experimental-features = [ "nix-command" "flakes" ];
       system.stateVersion = "{{ state_version | nix }}";
     }
