@@ -11,6 +11,16 @@
     # Never override this input's nixpkgs; the overlay choice selects it.
     cachyos-kernel.url = "{{ cachyos.flake_url }}";
 {%- endif %}
+{%- if balsa_ref %}
+    # Balsa's modules, pinned to the ISO's commit.
+    balsa = {
+      url = "github:balsa-linux/balsa/{{ balsa_ref | nix }}";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.disko.follows = "disko";
+      # Without this, locking fetches cachyos-kernel and its own nixpkgs on every install.
+      inputs.cachyos-kernel.follows = "{% if cachyos %}cachyos-kernel{% endif %}";
+    };
+{%- endif %}
   };
 
   outputs = inputs@{ self, nixpkgs, disko, ... }: {
@@ -21,6 +31,9 @@
         ./disko-config.nix
         ./hardware-configuration.nix
         ./configuration.nix
+{%- if balsa_ref %}
+        inputs.balsa.nixosModules.branding
+{%- endif %}
       ];
     };
   };

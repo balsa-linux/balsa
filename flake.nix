@@ -15,8 +15,12 @@
       modules = [
         ./iso/default.nix
         disko.nixosModules.disko
+        self.nixosModules.branding
       ];
     };
+
+    # Installed systems import these through a balsa input in their generated flake.
+    nixosModules.branding = ./modules/branding;
 
     packages.x86_64-linux.configgen =
       (nixpkgs.legacyPackages.x86_64-linux.callPackage ./cfggen {});

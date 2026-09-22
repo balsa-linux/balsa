@@ -2,12 +2,6 @@
 
 let
   system = pkgs.stdenv.hostPlatform.system;
-
-  # KDE Info Centre and friends read os-release's LOGO as an icon-theme name.
-  logoIcon = pkgs.runCommand "balsa-logo-icon" { } ''
-    install -Dm644 ${../calamares/branding/balsa/logo.png} \
-      $out/share/icons/hicolor/256x256/apps/balsa.png
-  '';
 in
 {
   imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix" ];
@@ -25,28 +19,13 @@ in
     self.packages.${system}.configgen
     disko.packages.${system}.disko
     pkgs.mkpasswd
-    logoIcon
   ];
-
-  # A non-nixos distroId drops the nixos.org URLs from os-release.
-  system.nixos.distroId = "balsa";
-  system.nixos.distroName = "Balsa";
-  system.nixos.vendorId = "balsa";
-  system.nixos.vendorName = "Balsa";
-  system.nixos.extraOSReleaseArgs = {
-    VERSION = "27.0a";
-    VERSION_ID = "27.0a";
-    VERSION_CODENAME = "27";
-    CPE_NAME = "cpe:/o:balsa:balsa:27.0a";
-    PRETTY_NAME = "Balsa 27.0a";
-    LOGO = "balsa";
-    HOME_URL = "https://balsa.aylah.dev";
-    SUPPORT_URL = "https://github.com/aylah/balsa/issues";
-    BUG_REPORT_URL = "https://github.com/aylah/balsa/issues";
-  };
 
   # balsa-config-export pins installed systems to this, the nixpkgs of the live store.
   environment.etc."balsa/nixpkgs-rev".text = config.system.nixos.revision;
+
+  # Installed systems fetch nixosModules.branding from GitHub at this commit.
+  environment.etc."balsa/balsa-rev".text = self.rev or (lib.removeSuffix "-dirty" self.dirtyRev);
 
   nix.settings = {
     experimental-features = [ "nix-command" "flakes" ];

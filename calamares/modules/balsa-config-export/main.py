@@ -11,6 +11,7 @@ DEST = "etc/nixos"  # inside the installed root
 PLAN = "/tmp/balsa-plan.toml"
 # Written by iso/default.nix from system.nixos.revision.
 NIXPKGS_REV_FILE = "/etc/balsa/nixpkgs-rev"
+BALSA_REV_FILE = "/etc/balsa/balsa-rev"
 
 DESKTOPS = {"plasma6": "plasma"}  # every other chooser id already matches DesktopChoice
 
@@ -181,15 +182,15 @@ def run():
     if login:
         plan["login_manager"] = login
 
-    # Pin to the ISO's nixpkgs so nixos-install substitutes the desktop from the live store.
-    try:
-        with open(NIXPKGS_REV_FILE) as f:
-            plan["nixpkgs_ref"] = f.read().strip()
-    except OSError as e:
-        return ("ISO nixpkgs revision unknown",
-                "Could not read {}: {}".format(NIXPKGS_REV_FILE, e))
-    if not plan["nixpkgs_ref"]:
-        return ("ISO nixpkgs revision unknown", "{} is empty.".format(NIXPKGS_REV_FILE))
+    # Pin to the ISO's nixpkgs, so nixos-install reuses the live store, and to its Balsa commit.
+    for key, path in (("nixpkgs_ref", NIXPKGS_REV_FILE), ("balsa_ref", BALSA_REV_FILE)):
+        try:
+            with open(path) as f:
+                plan[key] = f.read().strip()
+        except OSError as e:
+            return ("ISO revision unknown", "Could not read {}: {}".format(path, e))
+        if not plan[key]:
+            return ("ISO revision unknown", "{} is empty.".format(path))
 
     with open(PLAN, "w") as f:
         f.write("\n".join(_dump(plan)) + "\n")
