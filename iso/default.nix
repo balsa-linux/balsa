@@ -14,6 +14,7 @@ let
     magick -size 1x1 xc:"#1A1A1A" PNG32:background.png
     for f in boot_menu_*.png; do magick "$f" -fill "#1A1A1A" -colorize 100 "PNG32:$f"; done
     magick select_c.png -fill "#2A2A2A" -colorize 100 PNG32:select_c.png
+    for f in icons/*.png; do magick "$f" -fill "#E6E6E6" -colorize 100 "PNG32:$f"; done
     sed -i -e 's/item_color = "#232627"/item_color = "#E6E6E6"/' \
       -e 's/selected_item_color= "#232627"/selected_item_color= "#E9C6AF"/' \
       -e 's/border_color = #5579C4/border_color = #E9C6AF/' \
