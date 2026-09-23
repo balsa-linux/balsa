@@ -1,4 +1,13 @@
-  environment.systemPackages = with pkgs; [ micro zed-editor ];
+  # lazy.nvim shells out to git, and micro replaces nano under its own name.
+  environment.systemPackages = [
+    pkgs.git
+    pkgs.zed-editor
+    (pkgs.runCommand "balsa-micro" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
+      makeWrapper ${pkgs.micro}/bin/micro $out/bin/micro --add-flags "-keymenu true"
+      ln -s micro $out/bin/nano
+    '')
+  ];
+  programs.nano.enable = false;
 
   programs.firefox.enable = true;
   xdg.mime.defaultApplications = {

@@ -22,6 +22,25 @@ let
       -e 's/fg_color = #5579C4/fg_color = #E9C6AF/' theme.txt
   '';
 
+  # i3 -C rejects a bad config at build time; i3 only shows a nagbar at runtime.
+  i3Config = pkgs.runCommand "balsa-i3-config" { nativeBuildInputs = [ pkgs.i3 ]; } ''
+    cat > $out <<"CONFIG"
+    set $mod Mod4
+    font pango:DejaVu Sans Mono 10
+    bindsym $mod+Return exec alacritty
+    bindsym $mod+d exec dmenu_run
+    bindsym $mod+Shift+q kill
+    bindsym $mod+Shift+e exit
+    floating_modifier $mod
+    bar {
+        status_command i3status
+    }
+    # i3 has no XDG autostart; pkexec matches what the packaged desktop entry does.
+    exec --no-startup-id pkexec calamares
+    CONFIG
+    i3 -C -c $out
+  '';
+
   # syslinux draws its menu in the top rows and the timeout at the bottom, so the lockup sits centred.
   biosSplash = pkgs.runCommand "balsa-bios-splash.png" { nativeBuildInputs = [ pkgs.imagemagick ]; } ''
     magick -size 800x600 xc:"#1A1A1A" \
@@ -30,7 +49,17 @@ let
   '';
 in
 {
-  imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares-plasma6.nix" ];
+  imports = [ "${modulesPath}/installer/cd-dvd/installation-cd-graphical-calamares.nix" ];
+
+  services.xserver.windowManager.i3.enable = true;
+  services.xserver.windowManager.i3.configFile = i3Config;
+
+  services.xserver.displayManager.lightdm.enable = true;
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "nixos";
+  };
+  services.displayManager.defaultSession = "none+i3";
 
   # calamares-nixos wraps calamares with this package's XDG dirs, so this overlay makes it the Balsa installer.
   nixpkgs.overlays = [
@@ -45,6 +74,7 @@ in
     self.packages.${system}.configgen
     disko.packages.${system}.disko
     pkgs.mkpasswd
+    pkgs.alacritty
   ];
 
   # Boot menu reads "Balsa 27.0a Installer"; the ISO module sets baseName at normal priority.

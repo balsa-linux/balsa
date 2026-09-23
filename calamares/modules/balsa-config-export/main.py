@@ -205,6 +205,9 @@ def run():
     )
     if result.returncode != 0:
         return ("config generation failed", result.stderr)
+    for line in result.stderr.splitlines():
+        # configgen warns about things like uncached CachyOS kernels; do not swallow them.
+        libcalamares.utils.warning(line)
 
     gs.insert("balsaConfigPath", out)
     return None

@@ -279,8 +279,8 @@ impl Default for CachyosCache {
     fn default() -> Self {
         // From the xddxdd/nix-cachyos-kernel README and its flake nixConfig
         Self {
-            substituter: "https://xddxdd.cachix.org".to_string(),
-            trusted_public_key: "xddxdd.cachix.org-1:ay1HJyNDYmlSwj5NXQG065C8LfoqqKaTNCyzeixGjf8="
+            substituter: "https://attic.xuyh0120.win/lantian".to_string(),
+            trusted_public_key: "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
                 .to_string(),
         }
     }
