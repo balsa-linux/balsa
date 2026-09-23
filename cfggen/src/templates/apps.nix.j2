@@ -1,0 +1,32 @@
+  environment.systemPackages = with pkgs; [ micro zed-editor ];
+
+  programs.firefox.enable = true;
+  xdg.mime.defaultApplications = {
+    "text/html" = "firefox.desktop";
+    "x-scheme-handler/http" = "firefox.desktop";
+    "x-scheme-handler/https" = "firefox.desktop";
+  };
+
+  programs.neovim = {
+    enable = true;
+    defaultEditor = true;
+    viAlias = true;
+    vimAlias = true;
+    configure = {
+      # Only lazy.nvim comes from nixpkgs; it fetches LazyVim's plugins on first run.
+      customRC = ''
+        lua << EOF
+        vim.g.mapleader = " "
+        vim.g.maplocalleader = "\\"
+        -- start packages reach rtp only after init, so lazy cannot load its submodules yet.
+        vim.opt.rtp:prepend("${pkgs.vimPlugins.lazy-nvim}")
+        require("lazy").setup({
+          spec = { { "LazyVim/LazyVim", import = "lazyvim.plugins" } },
+          install = { colorscheme = { "tokyonight", "habamax" } },
+          lockfile = vim.fn.stdpath("data") .. "/lazy-lock.json",
+          performance = { rtp = { reset = false } },
+        })
+        EOF
+      '';
+    };
+  };

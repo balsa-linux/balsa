@@ -40,6 +40,7 @@ const TEMPLATES: &[(&str, &str)] = &[
     ("tuning.nix.j2", include_str!("../templates/tuning.nix.j2")),
     ("swap.nix.j2", include_str!("../templates/swap.nix.j2")),
     ("shell.nix.j2", include_str!("../templates/shell.nix.j2")),
+    ("apps.nix.j2", include_str!("../templates/apps.nix.j2")),
     ("flake.nix.j2", include_str!("../templates/flake.nix.j2")),
     (
         "configuration.nix.j2",
