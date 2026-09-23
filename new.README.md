@@ -37,3 +37,11 @@
 <li>Offer browser choice during install between LibreWolf, Helium, Zen, Firefox, and Chromium.</li>
 <li>Media creation tool to build ISOs and create installation media.</li>
 </ul>
+
+<h2>Credits:</h2>
+<ul>
+<li>Lead Developer: @aylah-a63</li>
+<li>Contributors: <br>Want to see your name here? Feel free to contribute!</li>
+<li>Developers of Nix, all preloaded software</li>
+<li>You, for installing!</li>
+</ul>

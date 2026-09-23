@@ -61,3 +61,11 @@
 {%- if desktop_is_tiling %}
   security.polkit.enable = true;
 {%- endif %}
+
+  # GTK takes its titlebar buttons from this GNOME key, whose default is close-only.
+  programs.dconf.enable = true;
+  programs.dconf.profiles.user.databases = [
+    {
+      settings."org/gnome/desktop/wm/preferences".button-layout = "appmenu:minimize,maximize,close";
+    }
+  ];
