@@ -77,6 +77,9 @@ in
     pkgs.alacritty
   ];
 
+  # Calamares and i3 fall back to bitmap fonts without a real sans family installed.
+  fonts.packages = [ pkgs.noto-fonts ];
+
   # Boot menu reads "Balsa 27.0a Installer"; the ISO module sets baseName at normal priority.
   system.nixos.label = "27.0a";
   image.baseName = lib.mkForce "balsa-27.0a-x86_64";

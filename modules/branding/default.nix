@@ -7,6 +7,90 @@ let
       $out/share/icons/hicolor/256x256/apps/balsa.png
   '';
 
+  # Every desktop's menu button asks the icon theme for one of these names.
+  menuIconNames = [
+    "start-here"
+    "start-here-symbolic"
+    "start-here-kde"
+    "start-here-kde-symbolic"
+    "start-here-lxqt"
+    "cinnamon-symbolic"
+    "org.xfce.panel.applicationsmenu"
+  ];
+
+  desktop = {
+    plasma = config.services.desktopManager.plasma6.enable;
+    cinnamon = config.services.xserver.desktopManager.cinnamon.enable;
+    mate = config.services.xserver.desktopManager.mate.enable;
+    budgie = config.services.desktopManager.budgie.enable;
+    lxqt = config.services.xserver.desktopManager.lxqt.enable;
+    xfce = config.services.xserver.desktopManager.xfce.enable;
+  };
+
+  wayland =
+    config.programs.niri.enable
+    || config.programs.sway.enable
+    || config.programs.hyprland.enable
+    || config.programs.labwc.enable
+    || config.programs.wayfire.enable;
+
+  # Inheriting whatever the desktop already uses leaves every icon but the menu button alone.
+  parentIconTheme =
+    if desktop.plasma || desktop.lxqt then "breeze"
+    else if desktop.mate then "menta"
+    else if desktop.cinnamon then "gnome"
+    else "Adwaita";
+
+  iconTheme = pkgs.runCommand "balsa-icon-theme" { } ''
+    dir=$out/share/icons/Balsa
+    mkdir -p $dir/256x256/apps
+    for name in ${lib.concatStringsSep " " menuIconNames}; do
+      ln -s ${../../calamares/branding/balsa/logo.png} $dir/256x256/apps/$name.png
+    done
+    cat > $dir/index.theme <<EOF
+    [Icon Theme]
+    Name=Balsa
+    Inherits=${parentIconTheme},Adwaita,hicolor
+    Directories=256x256/apps
+
+    [256x256/apps]
+    Size=256
+    MinSize=16
+    MaxSize=512
+    Type=Scalable
+    Context=Applications
+    EOF
+  '';
+
+  # A silent sed would leave the desktop on its own theme, so fail the build instead.
+  retheme = name: source: script: pkgs.runCommand name { } ''
+    sed ${script} ${source} > $out
+    grep -q Balsa $out || { echo "${source} has no icon theme setting to replace"; exit 1; }
+  '';
+
+  wallpaper = ./balsawp.png;
+
+  # Plasma keeps the wallpaper per user, so the layout script the first login runs sets it.
+  plasmaLookAndFeel = pkgs.runCommand "balsa-look-and-feel" { nativeBuildInputs = [ pkgs.jq ]; } ''
+    src=${pkgs.kdePackages.plasma-workspace}/share/plasma/look-and-feel/org.kde.breeze.desktop
+    dir=$out/share/plasma/look-and-feel/org.balsa.desktop
+    mkdir -p $dir
+    cp -r --no-preserve=mode $src/contents $dir/
+    jq '.KPlugin.Id = "org.balsa.desktop" | .KPlugin.Name = "Balsa"' $src/metadata.json > $dir/metadata.json
+    grep -q '^Theme=breeze$' $dir/contents/defaults
+    sed -i 's/^Theme=breeze$/Theme=Balsa/' $dir/contents/defaults
+    cat > $dir/contents/layouts/org.kde.plasma.desktop-layout.js <<EOF
+    loadTemplate("org.kde.plasma.desktop.defaultPanel")
+
+    var desktops = desktopsForActivity(currentActivity());
+    for (var i = 0; i < desktops.length; i++) {
+        desktops[i].wallpaperPlugin = "org.kde.image";
+        desktops[i].currentConfigGroup = ["Wallpaper", "org.kde.image", "General"];
+        desktops[i].writeConfig("Image", "file://${wallpaper}");
+    }
+    EOF
+  '';
+
   # bgrt's ImageDir points into the plymouth package, which ships no watermark.
   plymouthTheme =
     pkgs.runCommand "balsa-plymouth-theme" { nativeBuildInputs = [ pkgs.imagemagick ]; }
@@ -23,7 +107,84 @@ let
   quietBoot = config.system.nixos.variant_id != "installer";
 in
 {
-  environment.systemPackages = [ logoIcon ];
+  environment.systemPackages =
+    [ logoIcon iconTheme ] ++ lib.optional desktop.plasma plasmaLookAndFeel;
+
+  # Plasma, LXQt and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
+  environment.etc."xdg/kdeglobals" = lib.mkIf desktop.plasma {
+    text = ''
+      [KDE]
+      LookAndFeelPackage=org.balsa.desktop
+
+      [Icons]
+      Theme=Balsa
+    '';
+  };
+
+  environment.etc."xdg/lxqt/lxqt.conf" = lib.mkIf desktop.lxqt {
+    source = retheme "balsa-lxqt.conf" "${pkgs.lxqt.lxqt-session}/share/lxqt/lxqt.conf"
+      "'s/^icon_theme=.*/icon_theme=Balsa/'";
+  };
+
+  # pcmanfm-qt paints the LXQt desktop and keeps its own icon theme name.
+  environment.etc."xdg/pcmanfm-qt/lxqt/settings.conf" = lib.mkIf desktop.lxqt {
+    source = retheme "balsa-pcmanfm-qt.conf"
+      "${pkgs.lxqt.pcmanfm-qt}/share/pcmanfm-qt/lxqt/settings.conf"
+      "-e 's|^Wallpaper=.*|Wallpaper=${wallpaper}|' -e 's/^IconThemeName=.*/IconThemeName=Balsa/'";
+  };
+
+  # xfdesktop has no config until the user picks a wallpaper; its fallback is a build flag.
+  nixpkgs.overlays = [
+    (final: prev: {
+      xfdesktop = prev.xfdesktop.overrideAttrs (old: {
+        configureFlags = (old.configureFlags or [ ])
+          ++ [ "--with-default-backdrop-filename=${wallpaper}" ];
+      });
+    })
+  ];
+
+  environment.etc."xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml" = lib.mkIf desktop.xfce {
+    source = retheme "balsa-xsettings.xml"
+      "${pkgs.xfce.xfce4-settings}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
+      "'/IconThemeName/s/value=\"[^\"]*\"/value=\"Balsa\"/'";
+  };
+
+  # Keys for a desktop that is not installed are inert, so all three schemas get set.
+  programs.dconf.profiles.user.databases = [
+    {
+      settings = {
+        "org/gnome/desktop/interface".icon-theme = "Balsa";
+        "org/cinnamon/desktop/interface".icon-theme = "Balsa";
+        "org/mate/desktop/interface".icon-theme = "Balsa";
+        "org/gnome/desktop/background" = {
+          picture-uri = "file://${wallpaper}";
+          picture-uri-dark = "file://${wallpaper}";
+          picture-options = "zoom";
+        };
+        "org/cinnamon/desktop/background" = {
+          picture-uri = "file://${wallpaper}";
+          picture-options = "zoom";
+        };
+        "org/mate/desktop/background" = {
+          picture-filename = "${wallpaper}";
+          picture-options = "zoom";
+        };
+      };
+    }
+  ];
+
+  # Bare window managers paint no desktop of their own; every X session gets the wallpaper here.
+  services.xserver.displayManager.sessionCommands =
+    lib.mkIf config.services.xserver.enable "${pkgs.feh}/bin/feh --no-fehbg --bg-fill ${wallpaper}";
+
+  # The Wayland compositors have no desktop either, and each starts graphical-session.target.
+  systemd.user.services.balsa-wallpaper = lib.mkIf wayland {
+    description = "Balsa wallpaper";
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig.ExecStart = "${pkgs.swaybg}/bin/swaybg --mode fill --image ${wallpaper}";
+  };
 
   # A non-nixos distroId drops nixos.org's URLs; systemd-boot, GRUB and Limine title entries with distroName.
   system.nixos = {
