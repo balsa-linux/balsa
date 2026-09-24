@@ -27,6 +27,11 @@ let
     xfce = config.services.xserver.desktopManager.xfce.enable;
   };
 
+  # nixpkgs replaces the greeter's XDG_DATA_DIRS with just this, leaving it no icon theme.
+  greeterDataDirs = lib.mkForce (
+    "${config.services.displayManager.sessionData.desktops}/share:/run/current-system/sw/share"
+  );
+
   wayland =
     config.programs.niri.enable
     || config.programs.sway.enable
@@ -149,6 +154,11 @@ in
       "${pkgs.xfce.xfce4-settings}/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml"
       "'/IconThemeName/s/value=\"[^\"]*\"/value=\"Balsa\"/'";
   };
+
+  systemd.services.plasmalogin.environment.XDG_DATA_DIRS =
+    lib.mkIf config.services.displayManager.plasma-login-manager.enable greeterDataDirs;
+  systemd.user.services.plasma-login.environment.XDG_DATA_DIRS =
+    lib.mkIf config.services.displayManager.plasma-login-manager.enable greeterDataDirs;
 
   # Keys for a desktop that is not installed are inert, so all three schemas get set.
   programs.dconf.profiles.user.databases = [
