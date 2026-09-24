@@ -29,12 +29,16 @@ let
     font pango:DejaVu Sans Mono 10
     bindsym $mod+Return exec alacritty
     bindsym $mod+d exec dmenu_run
+    bindsym $mod+n exec nm-connection-editor
     bindsym $mod+Shift+q kill
     bindsym $mod+Shift+e exit
     floating_modifier $mod
     bar {
         status_command i3status
     }
+    # Wireless needs a GUI of its own here; i3bar shows the applet in its tray.
+    exec --no-startup-id nm-applet
+
     # i3 has no XDG autostart; pkexec matches what the packaged desktop entry does.
     exec --no-startup-id pkexec calamares
     CONFIG
@@ -75,6 +79,9 @@ in
     disko.packages.${system}.disko
     pkgs.mkpasswd
     pkgs.alacritty
+    pkgs.networkmanagerapplet
+    # nm-applet draws nothing without a theme that has its symbolic icons.
+    pkgs.adwaita-icon-theme
   ];
 
   # Calamares and i3 fall back to bitmap fonts without a real sans family installed.
