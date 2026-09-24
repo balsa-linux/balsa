@@ -39,4 +39,8 @@
   boot.zfs.forceImportRoot = false;
   # The by-id default is empty for some disks (e.g. virtio without a serial); disko's GPT always has partuuids.
   boot.zfs.devNodes = "/dev/disk/by-partuuid";
+  # File managers offer to mount the pool's member partition, which the kernel can never do.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="zfs_member", ENV{UDISKS_IGNORE}="1"
+  '';
 {%- endif %}
