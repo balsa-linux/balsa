@@ -1,3 +1,4 @@
+import glob
 import os
 import subprocess
 import libcalamares
@@ -25,6 +26,16 @@ def _swap_size_gib(device):
     with open(path) as f:
         sectors = int(f.read())
     return max(1, round(sectors * 512 / 2 ** 30))
+
+
+def _release(disk):
+    # A previous attempt in the same session leaves the pool imported, and disko then reuses it.
+    subprocess.run(["umount", "-R", ROOT_MOUNT], capture_output=True, text=True)
+    subprocess.run(["swapoff", "-a"], capture_output=True, text=True)
+    subprocess.run(["zpool", "export", "-a"], capture_output=True, text=True)
+    # ZFS labels sit at both ends of a member, so wipefs leaves them for the next layout to trip on.
+    for device in [disk] + sorted(set(glob.glob(disk + "*")) - {disk}):
+        subprocess.run(["zpool", "labelclear", "-f", device], capture_output=True, text=True)
 
 
 def run():
@@ -90,6 +101,8 @@ def run():
         return ("disko config generation failed", gen.stderr)
 
     config_path = gen.stdout.strip()
+
+    _release(disk)
 
     # --yes-wipe-all-disks skips a tty prompt no job can answer; Calamares already asked the user.
     apply = subprocess.run(
