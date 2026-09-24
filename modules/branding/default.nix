@@ -36,7 +36,8 @@ let
 
   # Inheriting whatever the desktop already uses leaves every icon but the menu button alone.
   parentIconTheme =
-    if desktop.plasma || desktop.lxqt then "breeze"
+    if desktop.plasma then "breeze-dark"
+    else if desktop.lxqt then "breeze"
     else if desktop.mate then "menta"
     else if desktop.cinnamon then "gnome"
     else "Adwaita";
@@ -72,13 +73,14 @@ let
 
   # Plasma keeps the wallpaper per user, so the layout script the first login runs sets it.
   plasmaLookAndFeel = pkgs.runCommand "balsa-look-and-feel" { nativeBuildInputs = [ pkgs.jq ]; } ''
-    src=${pkgs.kdePackages.plasma-workspace}/share/plasma/look-and-feel/org.kde.breeze.desktop
+    src=${pkgs.kdePackages.plasma-workspace}/share/plasma/look-and-feel/org.kde.breezedark.desktop
     dir=$out/share/plasma/look-and-feel/org.balsa.desktop
     mkdir -p $dir
     cp -r --no-preserve=mode $src/contents $dir/
     jq '.KPlugin.Id = "org.balsa.desktop" | .KPlugin.Name = "Balsa"' $src/metadata.json > $dir/metadata.json
-    grep -q '^Theme=breeze$' $dir/contents/defaults
-    sed -i 's/^Theme=breeze$/Theme=Balsa/' $dir/contents/defaults
+    grep -q '^Theme=breeze-dark$' $dir/contents/defaults
+    sed -i -e 's/^Theme=breeze-dark$/Theme=Balsa/' \
+      -e 's|^Image=Next$|Image=${wallpaper}|' $dir/contents/defaults
     cat > $dir/contents/layouts/org.kde.plasma.desktop-layout.js <<EOF
     loadTemplate("org.kde.plasma.desktop.defaultPanel")
 
@@ -111,13 +113,12 @@ in
     [ logoIcon iconTheme ] ++ lib.optional desktop.plasma plasmaLookAndFeel;
 
   # Plasma, LXQt and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
+  # Only the package name goes here: startplasma applies its defaults per user, so the
+  # greeter, whose unit trims XDG_DATA_DIRS, keeps an icon theme it can actually find.
   environment.etc."xdg/kdeglobals" = lib.mkIf desktop.plasma {
     text = ''
       [KDE]
       LookAndFeelPackage=org.balsa.desktop
-
-      [Icons]
-      Theme=Balsa
     '';
   };
 
@@ -153,9 +154,19 @@ in
   programs.dconf.profiles.user.databases = [
     {
       settings = {
-        "org/gnome/desktop/interface".icon-theme = "Balsa";
-        "org/cinnamon/desktop/interface".icon-theme = "Balsa";
-        "org/mate/desktop/interface".icon-theme = "Balsa";
+        "org/gnome/desktop/interface" = {
+          icon-theme = "Balsa";
+          gtk-theme = "Adwaita-dark";
+          color-scheme = "prefer-dark";
+        };
+        "org/cinnamon/desktop/interface" = {
+          icon-theme = "Balsa";
+          gtk-theme = "Adwaita-dark";
+        };
+        "org/mate/desktop/interface" = {
+          icon-theme = "Balsa";
+          gtk-theme = "Adwaita-dark";
+        };
         "org/gnome/desktop/background" = {
           picture-uri = "file://${wallpaper}";
           picture-uri-dark = "file://${wallpaper}";
