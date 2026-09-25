@@ -3,6 +3,8 @@
     pkgs.git
     # nvim-treesitter compiles each parser on install and wants cc on PATH.
     pkgs.gcc
+    pkgs.ripgrep
+    pkgs.fd
     pkgs.zed-editor
     (pkgs.runCommand "balsa-micro" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
       makeWrapper ${pkgs.micro}/bin/micro $out/bin/micro --add-flags "-keymenu true"
