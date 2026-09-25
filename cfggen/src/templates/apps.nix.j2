@@ -6,8 +6,43 @@
       makeWrapper ${pkgs.micro}/bin/micro $out/bin/micro --add-flags "-keymenu true"
       ln -s micro $out/bin/nano
     '')
+    (pkgs.writeShellApplication {
+      name = "balsa-pkg";
+      runtimeInputs = [ pkgs.nix-search-tv pkgs.fzf pkgs.nix ];
+      text = ''
+        # nix-search-tv indexes NixOS and home-manager options too, which are not installable.
+        choice=$(nix-search-tv print | grep "^nixpkgs/ " \
+          | fzf --preview "nix-search-tv preview {}" --scheme history) || exit 0
+        attr=''${choice#nixpkgs/ }
+        read -rp "Install $attr? [y/N] " reply
+        case "$reply" in
+          [yY]) nix profile install "nixpkgs#$attr" ;;
+        esac
+      '';
+    })
   ];
   programs.nano.enable = false;
+
+  # balsa-pkg and nix shell then resolve nixpkgs# to this system's own nixpkgs, already in the store.
+  nix.registry.nixpkgs.flake = inputs.nixpkgs;
+
+  # Flatpak asserts on portals, and the GTK backend covers the desktops that ship none.
+  services.flatpak.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+
+  # The module adds no remotes, and an empty Flatpak has nothing to offer.
+  systemd.services.balsa-flathub = {
+    wantedBy = [ "multi-user.target" ];
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    path = [ pkgs.flatpak ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+    };
+    script = "flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo";
+  };
 
   programs.firefox.enable = true;
   xdg.mime.defaultApplications = {
