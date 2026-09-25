@@ -297,7 +297,6 @@ pub enum DesktopChoice {
     Cosmic,
     Wayfire,
     Openbox,
-    Budgie,
     Lxqt,
     Fluxbox,
     Enlightenment,
@@ -315,7 +314,7 @@ pub enum DesktopChoice {
 
 impl DesktopChoice {
     /// every option as of right now
-    pub const ALL: [DesktopChoice; 22] = {
+    pub const ALL: [DesktopChoice; 21] = {
         use DesktopChoice::*;
         [
             Plasma,
@@ -326,7 +325,6 @@ impl DesktopChoice {
             Cosmic,
             Wayfire,
             Openbox,
-            Budgie,
             Lxqt,
             Fluxbox,
             Enlightenment,
@@ -366,7 +364,6 @@ impl DesktopChoice {
                 | Bspwm
                 | Xmonad
                 | Dwm
-                | Budgie
                 | Lxqt
         )
     }
@@ -375,7 +372,7 @@ impl DesktopChoice {
         use DesktopChoice::*;
         match self {
             Plasma => LoginManager::Sddm,
-            Gnome | Pantheon | Budgie => LoginManager::Gdm,
+            Gnome | Pantheon => LoginManager::Gdm,
             Cosmic => LoginManager::CosmicGreeter,
             other if other.is_tiling() => LoginManager::Regreet,
             _ => LoginManager::Sddm,

@@ -22,7 +22,6 @@ let
     plasma = config.services.desktopManager.plasma6.enable;
     cinnamon = config.services.xserver.desktopManager.cinnamon.enable;
     mate = config.services.xserver.desktopManager.mate.enable;
-    budgie = config.services.desktopManager.budgie.enable;
     lxqt = config.services.xserver.desktopManager.lxqt.enable;
     xfce = config.services.xserver.desktopManager.xfce.enable;
   };

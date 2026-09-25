@@ -13,3 +13,4 @@ Just note I am not responsible for any damage caused by using this code, includi
 - Default utilities [20%]
 - Postinstall [0%]
 - Bootloader choice [0%]
+- Kernel patching [0%]

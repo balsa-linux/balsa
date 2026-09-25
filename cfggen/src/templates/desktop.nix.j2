@@ -17,8 +17,6 @@
   programs.wayfire.enable = true;
 {%- elif desktop == "openbox" %}
   services.xserver.windowManager.openbox.enable = true;
-{%- elif desktop == "budgie" %}
-  services.desktopManager.budgie.enable = true;
 {%- elif desktop == "lxqt" %}
   services.xserver.desktopManager.lxqt.enable = true;
 {%- elif desktop == "fluxbox" %}
