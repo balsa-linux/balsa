@@ -1,6 +1,8 @@
-  # lazy.nvim shells out to git, and micro replaces nano under its own name.
+  # lazy.nvim shells out to git and a C compiler, and micro replaces nano under its own name.
   environment.systemPackages = [
     pkgs.git
+    # nvim-treesitter compiles each parser on install and wants cc on PATH.
+    pkgs.gcc
     pkgs.zed-editor
     (pkgs.runCommand "balsa-micro" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
       makeWrapper ${pkgs.micro}/bin/micro $out/bin/micro --add-flags "-keymenu true"
