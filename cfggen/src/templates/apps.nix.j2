@@ -5,6 +5,12 @@
     pkgs.gcc
     pkgs.ripgrep
     pkgs.fd
+    # The file managers' "extract here" shells out to these, and xdg-open routes links to Firefox.
+    pkgs.unzip
+    pkgs.p7zip
+    pkgs.xdg-utils
+    pkgs.wget
+    pkgs.btop
     pkgs.zed-editor
     (pkgs.runCommand "balsa-micro" { nativeBuildInputs = [ pkgs.makeWrapper ]; } ''
       makeWrapper ${pkgs.micro}/bin/micro $out/bin/micro --add-flags "-keymenu true"
@@ -26,6 +32,22 @@
     })
   ];
   programs.nano.enable = false;
+
+  # Nothing else installs a font, so emoji and CJK render as boxes everywhere.
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-color-emoji
+    noto-fonts-cjk-sans
+    jetbrains-mono
+  ];
+
+  # The system flake lives here, so nh rebuilds and prunes without being told where to look.
+  programs.nh = {
+    enable = true;
+    flake = "/etc/nixos";
+    clean.enable = true;
+    clean.extraArgs = "--keep 5 --keep-since 7d";
+  };
 
   # balsa-pkg and nix shell then resolve nixpkgs# to this system's own nixpkgs, already in the store.
   nix.registry.nixpkgs.flake = inputs.nixpkgs;

@@ -31,12 +31,12 @@
 {%- elif desktop == "niri" %}
   programs.niri.enable = true;
   # X11 apps run through xwayland-satellite, which niri spawns from PATH.
-  environment.systemPackages = with pkgs; [ xwayland-satellite alacritty fuzzel swaylock ];
+{%- set wm_packages = "xwayland-satellite alacritty fuzzel swaylock" %}
 {%- elif desktop == "mango" %}
-  environment.systemPackages = with pkgs; [ mango foot rofi ];
+{%- set wm_packages = "mango foot rofi" %}
 {%- elif desktop == "hyprland" %}
   programs.hyprland.enable = true;
-  environment.systemPackages = with pkgs; [ kitty kdePackages.dolphin hyprlauncher ];
+{%- set wm_packages = "kitty kdePackages.dolphin hyprlauncher" %}
 {%- elif desktop == "i3" %}
   services.xserver.windowManager.i3.enable = true;
 {%- elif desktop == "sway" %}
@@ -48,16 +48,53 @@
     configFile = "${pkgs.bspwm}/share/doc/bspwm/examples/bspwmrc";
     sxhkd.configFile = "${pkgs.bspwm}/share/doc/bspwm/examples/sxhkdrc";
   };
-  environment.systemPackages = with pkgs; [ rxvt-unicode dmenu ];
+{%- set wm_packages = "rxvt-unicode dmenu" %}
 {%- elif desktop == "xmonad" %}
   services.xserver.windowManager.xmonad.enable = true;
-  environment.systemPackages = [ pkgs.dmenu ];
+{%- set wm_packages = "dmenu" %}
 {%- elif desktop == "dwm" %}
   services.xserver.windowManager.dwm.enable = true;
-  environment.systemPackages = with pkgs; [ st dmenu ];
+{%- set wm_packages = "st dmenu" %}
 {%- endif %}
 {%- if desktop_is_tiling %}
   security.polkit.enable = true;
+
+  # Polkit without an agent means a GUI authentication prompt never appears at all.
+  systemd.user.services.balsa-polkit-agent = {
+    description = "Polkit authentication agent";
+    partOf = [ "graphical-session.target" ];
+    after = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig.ExecStart = "${pkgs.lxqt.lxqt-policykit}/bin/lxqt-policykit-agent";
+  };
+{%- endif %}
+{%- if wm_packages is defined or desktop_is_tiling %}
+
+  environment.systemPackages = with pkgs; [
+{%- if wm_packages is defined %}
+    {{ wm_packages }}
+{%- endif %}
+{%- if desktop_is_tiling %}
+{%- if desktop != "hyprland" %}
+    pcmanfm
+{%- endif %}
+    pavucontrol
+    mpv
+{%- if needs_xserver %}
+    xclip
+    flameshot
+    # dunst owns org.freedesktop.Notifications, so dbus starts it the first time something notifies.
+    dunst
+{%- else %}
+    wl-clipboard
+    grim
+    slurp
+    imv
+    # mako owns org.freedesktop.Notifications, so dbus starts it the first time something notifies.
+    mako
+{%- endif %}
+{%- endif %}
+  ];
 {%- endif %}
 
   # GTK takes its titlebar buttons from this GNOME key, whose default is close-only.
