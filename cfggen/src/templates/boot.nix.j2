@@ -1,6 +1,8 @@
 {%- if effective_loader == "limine" %}
+  # The ESP is 1 GiB and each generation copies a kernel and initrd into it.
   boot.loader.limine = {
     enable = true;
+    maxGenerations = 10;
 {%- if boot.legacy_bios %}
     biosSupport = true;
     biosDevice = "{{ disk.disk | nix }}";
@@ -14,11 +16,13 @@
 {%- endif %}
 {%- elif effective_loader == "systemd-boot" %}
   boot.loader.systemd-boot.enable = true;
+  boot.loader.systemd-boot.configurationLimit = 10;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "{{ boot.esp_mount | nix }}";
 {%- else %}
   boot.loader.grub = {
     enable = true;
+    configurationLimit = 10;
 {%- if boot.legacy_bios %}
     # boot.loader.grub.devices comes from disko's EF02 partition.
 {%- else %}
@@ -34,7 +38,13 @@
   boot.loader.efi.efiSysMountPoint = "{{ boot.esp_mount | nix }}";
 {%- endif %}
 {%- endif %}
+{%- if disk.filesystem == "btrfs" %}
+  services.btrfs.autoScrub.enable = true;
+  environment.systemPackages = [ pkgs.compsize ];
+{%- endif %}
 {%- if disk.filesystem == "zfs" %}
+  # Trim is already on by default; a scrub is what verifies the checksums it stores.
+  services.zfs.autoScrub.enable = true;
   # nixpkgs' upcoming default; forced import risks importing a pool another system is using.
   boot.zfs.forceImportRoot = false;
   # The by-id default is empty for some disks (e.g. virtio without a serial); disko's GPT always has partuuids.

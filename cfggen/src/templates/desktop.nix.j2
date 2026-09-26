@@ -59,6 +59,10 @@
 {%- if desktop_is_tiling %}
   security.polkit.enable = true;
 
+  # The full desktops switch these on themselves; without them a file manager cannot mount a USB stick.
+  services.udisks2.enable = true;
+  services.gvfs.enable = true;
+
   # Polkit without an agent means a GUI authentication prompt never appears at all.
   systemd.user.services.balsa-polkit-agent = {
     description = "Polkit authentication agent";
@@ -79,6 +83,8 @@
     pcmanfm
 {%- endif %}
     pavucontrol
+    # Plasma and GNOME ship a bluetooth applet of their own; these desktops have none.
+    blueman
     mpv
 {%- if needs_xserver %}
     xclip

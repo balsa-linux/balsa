@@ -41,6 +41,24 @@
     jetbrains-mono
   ];
 
+  # GNOME turns this on itself; everywhere else the adapter stays dark and pairs nothing.
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+
+  # Without CUPS there is no print dialog at all, and avahi is what finds driverless printers.
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  # Discover and GNOME Software grow a firmware section once this is on.
+  services.fwupd.enable = true;
+
+  # Rebuilds land the same files over and over; hardlinking them back costs nothing at rest.
+  nix.settings.auto-optimise-store = true;
+
   # The system flake lives here, so nh rebuilds and prunes without being told where to look.
   programs.nh = {
     enable = true;
