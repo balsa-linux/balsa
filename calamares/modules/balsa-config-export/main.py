@@ -125,6 +125,7 @@ def run():
         "hostname": gs.value("hostname"),
         "username": gs.value("username"),
         "balsaDesktop": desktop,
+        "balsaBootloader": gs.value("balsaBootloader"),
         "balsaTuningDefault": gs.value("balsaTuningDefault"),
         "locationRegion": gs.value("locationRegion"),
         "locationZone": gs.value("locationZone"),
@@ -162,8 +163,7 @@ def run():
         },
         "disk": disk,
         "boot": {
-            # systemd-boot cannot boot legacy BIOS, so GRUB takes over there.
-            "loader": "grub" if legacy_bios else "systemd-boot",
+            "loader": gs.value("balsaBootloader"),
             "legacy_bios": legacy_bios,
             "esp_mount": gs.value("balsaEspMount") or "/boot",
         },
