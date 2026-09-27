@@ -5,7 +5,7 @@ If, for whatever reason, you decide to use a pre-pre-prerelease that's incomplet
 
 Just note I am not responsible for any damage caused by using this code, including any data loss, system instability, or other issues that may arise. It's an in-progress project, it's going to have problems.
 ## Still to do:
-- Default applications [50%]
+- Default applications [75%]
 - Making the installer beautiful [80%]
 - Default shipping the actual configs [20%]
 - Tuning profiles [0%]
