@@ -240,6 +240,9 @@ in
     themePackages = [ plymouthTheme ];
   };
 
+  # nixpkgs points Limine at a nixos-artwork wallpaper; the option exists even when Limine is off.
+  boot.loader.limine.style.wallpapers = [ wallpaper ];
+
   boot.consoleLogLevel = lib.mkIf quietBoot 3;
   boot.initrd.verbose = lib.mkIf quietBoot false;
   boot.kernelParams = lib.mkIf quietBoot [ "quiet" "udev.log_level=3" "systemd.show_status=auto" ];

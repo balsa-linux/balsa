@@ -5,14 +5,14 @@ If, for whatever reason, you decide to use a pre-pre-prerelease that's incomplet
 
 Just note I am not responsible for any damage caused by using this code, including any data loss, system instability, or other issues that may arise. It's an in-progress project, it's going to have problems.
 ## Still to do:
-- Default applications [75%]
+- Default applications [95%]
 - Making the installer beautiful [80%]
 - Default shipping the actual configs [20%]
 - Tuning profiles [0%]
 - Put branding EVERYWHERE [90%]
 - Default utilities [20%]
 - Postinstall [0%]
-- Bootloader choice [0%]
+- Bootloader choice [65%]
 - Kernel patching [0%]
 - Native NixOS to Balsa install path [0%]
 - Nix simplification [10%]
