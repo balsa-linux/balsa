@@ -113,6 +113,17 @@ let
   quietBoot = config.system.nixos.variant_id != "installer";
 in
 {
+  # Upstream builds the boot label inline, so codeName can only be dropped by replacing the module.
+  disabledModules = [ "system/activation/bootspec.nix" ];
+  imports = [ ./bootspec.nix ];
+
+  # A warning, not an assertion: this module is fetched from GitHub, so a failure here would block
+  # nixos-rebuild on installed systems the moment they bump nixpkgs.
+  warnings = lib.optional (
+    builtins.hashFile "sha256" (pkgs.path + "/nixos/modules/system/activation/bootspec.nix")
+    != "3ad576dc0e8e3a5c9df649b2abf77ad1b26dc6928e5eb3d2c811f46deb3a03b2"
+  ) "nixpkgs bootspec.nix changed; re-diff modules/branding/bootspec.nix";
+
   environment.systemPackages =
     [ logoIcon iconTheme ] ++ lib.optional desktop.plasma plasmaLookAndFeel;
 
