@@ -31,7 +31,16 @@
 {% include "swap.nix.j2" %}
     }
     {
+{%- set_global specialisation = false %}
+{%- set_global profile = tuning_profile %}
 {% include "tuning.nix.j2" %}
+{%- set_global specialisation = true %}
+{%- for p in tuning_specialisations %}
+    specialisation.{{ p }}.configuration = {
+{%- set_global profile = p %}
+{% include "tuning.nix.j2" %}
+    };
+{%- endfor %}
     }
     {
 {% include "shell.nix.j2" %}

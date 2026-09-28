@@ -16,6 +16,9 @@ pub struct BalsaInstallPlan {
     pub login_manager: Option<LoginManager>,
     pub accounts: AccountsConfig,
     pub tuning_profile: TuningProfile,
+    /// Profiles built as switchable boot entries alongside the default
+    #[serde(default)]
+    pub tuning_specialisations: Vec<TuningProfile>,
     #[serde(default = "default_nixpkgs_ref")]
     pub nixpkgs_ref: String,
     /// Balsa commit whose nixosModules the system imports; fixtures use None, having no pushed commit.

@@ -12,7 +12,7 @@ Just note I am not responsible for any damage caused by using this code, includi
 - Put branding EVERYWHERE [90%]
 - Default utilities [20%]
 - Postinstall [0%]
-- Bootloader choice [65%]
+- Bootloader choice [95%]
 - Kernel patching [0%]
 - Native NixOS to Balsa install path [0%]
 - Nix simplification [10%]

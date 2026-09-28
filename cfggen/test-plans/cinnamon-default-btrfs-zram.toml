@@ -1,5 +1,6 @@
 desktop = "cinnamon"
 tuning_profile = "laptop"
+tuning_specialisations = ["gaming", "lightweight"]
 
 [locale]
 locale = "en_US.UTF-8"

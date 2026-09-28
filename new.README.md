@@ -7,7 +7,7 @@
 <p>Balsa Linux is a new distribution, powered by Nix. It allows for out-of-the-box customisation, is jam-packed with all the latest features, and is designed to be easy to use and modify.</p>
 <center><h2>Requirements:</h2></center>
 <ul>
-<li>64-bit CPU (x86_64 or aarch64) [IMPORTANT! aarch64 will be missing features!</li>
+<li>64-bit CPU (x86_64 or aarch64) [IMPORTANT! aarch64 will be missing features compared to the x86_64 version. They will not be included in the aarch64 installer.]</li>
 <li>2-4GB RAM required | 8+GB RAM recommended</li>
 <li>20GB+ of free disk space required | 60GB+ recommended</li>
 <li>An active network connection</li>
@@ -28,6 +28,7 @@
 <li><strong>OpenZFS Support:</strong> Balsa Linux supports OpenZFS out-of-the-box, providing advanced storage management capabilities.</li>
 <li><strong>Kernel options:</strong> Why stick with mainline or LTS? Balsa Linux offers the Zen and Xanmod kernels, providing improved performance and stability.</li>
 <li><strong>Nix package manager:</strong> Balsa Linux comes with the Nix package manager, allowing for easy and reproducible package management. Provided alongside the package manager are utilities to streamline the Nix experience of installing, managing, and reproducing.</li>
+<li><strong>balsa-pkg:</strong> Finding nixpkgs has never been easier with this fzf-powered TUI tool. Simply search for a package that you want to install!</li>
 <li><strong>Tuning profiles:</strong> Balsa Linux offers tuning profiles to optimize system performance and stability, depending on your workload. You can run the gaming profile for games, development profile for writing code, and so much more.</li>
 </ul>
 
@@ -42,6 +43,6 @@
 <ul>
 <li>Lead Developer: @aylah-a63</li>
 <li>Contributors: <br>Want to see your name here? Feel free to contribute!</li>
-<li>Developers of Nix, all preloaded software</li>
+<li>Developers of Nix, nixpkgs, NixOS, all preloaded software</li>
 <li>You, for installing!</li>
 </ul>

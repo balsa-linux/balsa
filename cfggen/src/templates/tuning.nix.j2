@@ -1,15 +1,13 @@
-{%- if tuning_profile == "standard" %}
+{%- if profile == "standard" %}
   services.pipewire.enable = lib.mkDefault true;
   services.pipewire.pulse.enable = lib.mkDefault true;
-{%- elif tuning_profile == "laptop" %}
-  services.tlp.enable = true;
+{%- elif profile == "laptop" %}
   # Desktops pull power-profiles-daemon in; it asserts against tlp.
   services.power-profiles-daemon.enable = false;
-  services.thermald.enable = true;
   powerManagement.enable = true;
   services.pipewire.enable = lib.mkDefault true;
   services.pipewire.pulse.enable = lib.mkDefault true;
-{%- elif tuning_profile == "gaming" %}
+{%- elif profile == "gaming" %}
   programs.gamemode.enable = true;
   programs.steam.enable = true;
   hardware.graphics.enable32Bit = true;
@@ -17,23 +15,26 @@
   boot.kernel.sysctl."vm.max_map_count" = 2147483642;
   services.pipewire.enable = true;
   services.pipewire.pulse.enable = true;
-{%- elif tuning_profile == "development" %}
+{%- elif profile == "development" %}
   programs.direnv.enable = true;
   environment.systemPackages = with pkgs; [ git gcc gnumake ];
   nix.settings.keep-outputs = true;
   nix.settings.keep-derivations = true;
   services.pipewire.enable = lib.mkDefault true;
   services.pipewire.pulse.enable = lib.mkDefault true;
-{%- elif tuning_profile == "creative" %}
+{%- elif profile == "creative" %}
   services.pipewire.enable = true;
   services.pipewire.pulse.enable = true;
   services.pipewire.jack.enable = true;
   security.rtkit.enable = true;
   boot.kernelParams = [ "threadirqs" ];
-{%- elif tuning_profile == "lightweight" %}
+{%- elif profile == "lightweight" %}
   documentation.enable = false;
   documentation.nixos.enable = false;
   zramSwap.enable = lib.mkDefault true;
   services.pipewire.enable = lib.mkDefault true;
   services.pipewire.pulse.enable = lib.mkDefault true;
 {%- endif %}
+{#- A specialisation inherits the default profile, so battery tuning has to be forced off where this profile does not want it. #}
+  services.tlp.enable = {% if specialisation %}lib.mkForce {% endif %}{% if profile == "laptop" %}true{% else %}false{% endif %};
+  services.thermald.enable = {% if specialisation %}lib.mkForce {% endif %}{% if profile == "laptop" %}true{% else %}false{% endif %};

@@ -156,6 +156,7 @@ def run():
     plan = {
         "desktop": desktop,
         "tuning_profile": gs.value("balsaTuningDefault"),
+        "tuning_specialisations": gs.value("balsaTuningSpecialisations") or [],
         "locale": {
             "locale": locale_conf.get("LANG", "en_US.UTF-8").split("/")[0],
             "keymap": gs.value("keyboardLayout") or "us",
