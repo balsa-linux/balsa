@@ -31,6 +31,9 @@ let
     "${config.services.displayManager.sessionData.desktops}/share:/run/current-system/sw/share"
   );
 
+  # The Plasma greeter can be picked without the Plasma desktop, and it themes itself the same way.
+  plasmaGreeter = config.services.displayManager.plasma-login-manager.enable;
+
   wayland =
     config.programs.niri.enable
     || config.programs.sway.enable
@@ -125,12 +128,12 @@ in
   ) "nixpkgs bootspec.nix changed; re-diff modules/branding/bootspec.nix";
 
   environment.systemPackages =
-    [ logoIcon iconTheme ] ++ lib.optional desktop.plasma plasmaLookAndFeel;
+    [ logoIcon iconTheme ] ++ lib.optional (desktop.plasma || plasmaGreeter) plasmaLookAndFeel;
 
   # Plasma, LXQt and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
   # Only the package name goes here: startplasma applies its defaults per user, so the
   # greeter, whose unit trims XDG_DATA_DIRS, keeps an icon theme it can actually find.
-  environment.etc."xdg/kdeglobals" = lib.mkIf desktop.plasma {
+  environment.etc."xdg/kdeglobals" = lib.mkIf (desktop.plasma || plasmaGreeter) {
     text = ''
       [KDE]
       LookAndFeelPackage=org.balsa.desktop
