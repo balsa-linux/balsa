@@ -181,6 +181,19 @@ in
       "'/IconThemeName/s/value=\"[^\"]*\"/value=\"Balsa\"/'";
   };
 
+  # Nothing expands the look-and-feel for the greeter, so its wallpaper stays the stock Next
+  # image unless it is named here. The ini generator escapes KConfig's nested group brackets,
+  # so this drops into the conf.d directory as text instead.
+  environment.etc."plasmalogin.conf.d/50-balsa.conf" = lib.mkIf plasmaGreeter {
+    text = ''
+      [Greeter]
+      WallpaperPluginId=org.kde.image
+
+      [Greeter][Wallpaper][org.kde.image][General]
+      Image=file://${wallpaper}
+    '';
+  };
+
   systemd.services.plasmalogin.environment.XDG_DATA_DIRS =
     lib.mkIf config.services.displayManager.plasma-login-manager.enable greeterDataDirs;
   systemd.user.services.plasma-login.environment.XDG_DATA_DIRS =
