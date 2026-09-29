@@ -134,7 +134,11 @@ in
   # Only the package name goes here: startplasma applies its defaults per user, so the
   # greeter, whose unit trims XDG_DATA_DIRS, keeps an icon theme it can actually find.
   environment.etc."xdg/kdeglobals" = lib.mkIf (desktop.plasma || plasmaGreeter) {
-    text = ''
+    # The greeter never runs startplasma, so it never expands the look-and-feel; its wallpaper
+    # shader brightens by 1.6 unless the colours themselves say the scheme is dark.
+    text = builtins.readFile
+      "${pkgs.kdePackages.breeze}/share/color-schemes/BreezeDark.colors" + ''
+
       [KDE]
       LookAndFeelPackage=org.balsa.desktop
     '';
