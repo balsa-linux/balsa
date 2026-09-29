@@ -131,10 +131,12 @@ in
     [ logoIcon iconTheme ]
     ++ lib.optional (desktop.plasma || plasmaGreeter) plasmaLookAndFeel
     # The greeter only sees /run/current-system/sw/share, so without the Plasma desktop it finds
-    # no colour scheme, theme or cursors and falls back to a light palette it then brightens.
+    # no cursors (breeze), no wallpaper plugin (plasma-workspace) and no desktop theme
+    # (libplasma). Missing the theme, it falls back to a light palette and brightens by 1.6.
     ++ lib.optionals (plasmaGreeter && !desktop.plasma) [
       pkgs.kdePackages.breeze
       pkgs.kdePackages.plasma-workspace
+      pkgs.kdePackages.libplasma
     ];
 
   # Plasma, LXQt and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
