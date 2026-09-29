@@ -128,7 +128,14 @@ in
   ) "nixpkgs bootspec.nix changed; re-diff modules/branding/bootspec.nix";
 
   environment.systemPackages =
-    [ logoIcon iconTheme ] ++ lib.optional (desktop.plasma || plasmaGreeter) plasmaLookAndFeel;
+    [ logoIcon iconTheme ]
+    ++ lib.optional (desktop.plasma || plasmaGreeter) plasmaLookAndFeel
+    # The greeter only sees /run/current-system/sw/share, so without the Plasma desktop it finds
+    # no colour scheme, theme or cursors and falls back to a light palette it then brightens.
+    ++ lib.optionals (plasmaGreeter && !desktop.plasma) [
+      pkgs.kdePackages.breeze
+      pkgs.kdePackages.plasma-workspace
+    ];
 
   # Plasma, LXQt and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
   # Only the package name goes here: startplasma applies its defaults per user, so the
