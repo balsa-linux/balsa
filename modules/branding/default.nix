@@ -78,6 +78,12 @@ let
 
   wallpaper = ./balsawp.png;
 
+  # The greeter blurs its wallpaper and re-saturates it, which lifts the result; gamma keeps
+  # the colour where a brightness cut would grey it out.
+  greeterWallpaper =
+    pkgs.runCommand "balsawp-greeter.png" { nativeBuildInputs = [ pkgs.imagemagick ]; }
+      ''magick ${wallpaper} -gamma 0.55 $out'';
+
   # Plasma keeps the wallpaper per user, so the layout script the first login runs sets it.
   plasmaLookAndFeel = pkgs.runCommand "balsa-look-and-feel" { nativeBuildInputs = [ pkgs.jq ]; } ''
     src=${pkgs.kdePackages.plasma-workspace}/share/plasma/look-and-feel/org.kde.breezedark.desktop
@@ -190,7 +196,7 @@ in
       WallpaperPluginId=org.kde.image
 
       [Greeter][Wallpaper][org.kde.image][General]
-      Image=file://${wallpaper}
+      Image=file://${greeterWallpaper}
     '';
   };
 
