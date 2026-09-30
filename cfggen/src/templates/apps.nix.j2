@@ -22,7 +22,7 @@
         # Specialisations hang off the booted system; switching into one replaces current-system.
         base=/run/booted-system
         profiles=(default)
-        # A literal ${'#'} after a brace opens a Tera comment, so the count is tracked by hand.
+        # A hash right after a brace opens a Tera comment, so the count is tracked by hand.
         count=1
         for d in "$base"/specialisation/*; do
           if [ -d "$d" ]; then
