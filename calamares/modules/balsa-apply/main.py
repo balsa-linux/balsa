@@ -11,6 +11,12 @@ LOGIN_AUTO = {
 
 
 def _resolve_login(choice, desktop):
+    # The greeter reads its icon theme through Qt's KDE platform theme, which only the Plasma desktop switches on; elsewhere its icons are unreadable against the dark background.
+    if choice == "plasma-login-manager" and desktop != "plasma6":
+        libcalamares.utils.warning(
+            "Plasma Login Manager needs the Plasma desktop, but {!r} was chosen; using sddm.".format(
+                desktop))
+        return "sddm"
     if choice != "auto":
         return choice
     if desktop in LOGIN_AUTO:
