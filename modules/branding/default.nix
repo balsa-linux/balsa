@@ -78,11 +78,11 @@ let
 
   wallpaper = ./balsawp.png;
 
-  # The greeter blurs its wallpaper and re-saturates it, which lifts the result; gamma keeps
-  # the colour where a brightness cut would grey it out.
+  # The greeter's fader always multiplies brightness by 0.7 and saturation by 1.5 and cannot be
+  # switched off, so the copy it gets is pre-scaled by the inverse to leave only the blur.
   greeterWallpaper =
     pkgs.runCommand "balsawp-greeter.png" { nativeBuildInputs = [ pkgs.imagemagick ]; }
-      ''magick ${wallpaper} -gamma 0.55 $out'';
+      ''magick ${wallpaper} -modulate 143,67 $out'';
 
   # Plasma keeps the wallpaper per user, so the layout script the first login runs sets it.
   plasmaLookAndFeel = pkgs.runCommand "balsa-look-and-feel" { nativeBuildInputs = [ pkgs.jq ]; } ''
@@ -141,6 +141,7 @@ in
     # (libplasma). Missing the theme, it falls back to a light palette and brightens by 1.6.
     ++ lib.optionals (plasmaGreeter && !desktop.plasma) [
       pkgs.kdePackages.breeze
+      pkgs.kdePackages.breeze-icons
       pkgs.kdePackages.plasma-workspace
       pkgs.kdePackages.libplasma
     ];
@@ -156,6 +157,11 @@ in
 
       [KDE]
       LookAndFeelPackage=org.balsa.desktop
+
+      # A colour scheme carries no [Icons] group, so the greeter fell back to light Breeze
+      # icons, whose dark strokes vanish against a dark background.
+      [Icons]
+      Theme=breeze-dark
     '';
   };
 

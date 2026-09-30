@@ -3,3 +3,5 @@ type: job
 name: balsa-install
 interface: python
 script: main.py
+# nixos-install is nearly all of the wall time; at equal weight it would start at 83%.
+weight: 12
