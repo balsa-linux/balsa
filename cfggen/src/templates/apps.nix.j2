@@ -17,6 +17,52 @@
       ln -s micro $out/bin/nano
     '')
     (pkgs.writeShellApplication {
+      name = "balsa-tune";
+      text = ''
+        # Specialisations hang off the booted system; switching into one replaces current-system.
+        base=/run/booted-system
+        profiles=(default)
+        # A literal ${'#'} after a brace opens a Tera comment, so the count is tracked by hand.
+        count=1
+        for d in "$base"/specialisation/*; do
+          if [ -d "$d" ]; then
+            profiles+=("$(basename "$d")")
+            count=$((count + 1))
+          fi
+        done
+
+        for i in "''${!profiles[@]}"; do
+          printf '%d) %s\n' "$((i + 1))" "''${profiles[i]}"
+        done
+
+        read -rp "Profile number: " n
+        case "$n" in
+          "" | *[!0-9]*) echo "Not a number: $n" >&2; exit 1 ;;
+        esac
+        if [ "$n" -lt 1 ] || [ "$n" -gt "$count" ]; then
+          echo "No profile $n" >&2
+          exit 1
+        fi
+
+        name=''${profiles[$((n - 1))]}
+        if [ "$name" = default ]; then
+          target=$base
+        else
+          target=$base/specialisation/$name
+        fi
+
+        # Kernel parameters are fixed at boot, so a profile that changes them needs its boot entry.
+        if ! diff -q /proc/cmdline "$target/kernel-params" >/dev/null 2>&1; then
+          echo "$name sets different kernel parameters; those need a reboot into its entry."
+        fi
+
+        read -rp "Switch to $name now? [y/N] " reply
+        case "$reply" in
+          [yY]) sudo "$target/bin/switch-to-configuration" test ;;
+        esac
+      '';
+    })
+    (pkgs.writeShellApplication {
       name = "balsa-pkg";
       runtimeInputs = [ pkgs.nix-search-tv pkgs.fzf pkgs.nix ];
       text = ''
