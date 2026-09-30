@@ -296,88 +296,37 @@ pub enum DesktopChoice {
     Gnome,
     Xfce,
     Cinnamon,
-    Mate,
     Cosmic,
-    Wayfire,
-    Openbox,
-    Lxqt,
-    Fluxbox,
-    Enlightenment,
-    Labwc,
-    Pantheon,
     Niri,
-    Mango,
     Hyprland,
     I3,
     Sway,
-    Bspwm,
-    Xmonad,
     Dwm,
 }
 
 impl DesktopChoice {
     /// every option as of right now
-    pub const ALL: [DesktopChoice; 21] = {
+    pub const ALL: [DesktopChoice; 10] = {
         use DesktopChoice::*;
-        [
-            Plasma,
-            Gnome,
-            Xfce,
-            Cinnamon,
-            Mate,
-            Cosmic,
-            Wayfire,
-            Openbox,
-            Lxqt,
-            Fluxbox,
-            Enlightenment,
-            Labwc,
-            Pantheon,
-            Niri,
-            Mango,
-            Hyprland,
-            I3,
-            Sway,
-            Bspwm,
-            Xmonad,
-            Dwm,
-        ]
+        [Plasma, Gnome, Xfce, Cinnamon, Cosmic, Niri, Hyprland, I3, Sway, Dwm]
     };
 
     pub fn is_tiling(self) -> bool {
         use DesktopChoice::*;
-        matches!(
-            self,
-            Niri | Mango | Hyprland | I3 | Sway | Bspwm | Xmonad | Dwm
-        )
+        matches!(self, Niri | Hyprland | I3 | Sway | Dwm)
     }
 
     /// True when the pick runs on X11 and needs services.xserver.enable.
     pub fn needs_xserver(self) -> bool {
         use DesktopChoice::*;
-        matches!(
-            self,
-            Xfce | Cinnamon
-                | Mate
-                | Openbox
-                | Fluxbox
-                | Enlightenment
-                | Pantheon
-                | I3
-                | Bspwm
-                | Xmonad
-                | Dwm
-                | Lxqt
-        )
+        matches!(self, Xfce | Cinnamon | I3 | Dwm)
     }
 
     pub fn default_login_manager(self) -> LoginManager {
         use DesktopChoice::*;
         match self {
-            Plasma => LoginManager::Sddm,
-            Gnome | Pantheon => LoginManager::Gdm,
+            Gnome => LoginManager::Gdm,
             Cosmic => LoginManager::CosmicGreeter,
-            other if other.is_tiling() => LoginManager::Regreet,
             _ => LoginManager::Sddm,
         }
     }
@@ -389,10 +338,6 @@ pub enum LoginManager {
     Sddm,
     Gdm,
     PlasmaLoginManager,
-    Greetd,
-    Ly,
-    Regreet,
-    Lemurs,
     CosmicGreeter,
 }
 

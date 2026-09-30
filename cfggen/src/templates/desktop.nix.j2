@@ -9,31 +9,13 @@
   services.xserver.desktopManager.xfce.enable = true;
 {%- elif desktop == "cinnamon" %}
   services.xserver.desktopManager.cinnamon.enable = true;
-{%- elif desktop == "mate" %}
-  services.xserver.desktopManager.mate.enable = true;
 {%- elif desktop == "cosmic" %}
   services.desktopManager.cosmic.enable = true;
-{%- elif desktop == "wayfire" %}
-  programs.wayfire.enable = true;
-{%- elif desktop == "openbox" %}
-  services.xserver.windowManager.openbox.enable = true;
-{%- elif desktop == "lxqt" %}
-  services.xserver.desktopManager.lxqt.enable = true;
-{%- elif desktop == "fluxbox" %}
-  services.xserver.windowManager.fluxbox.enable = true;
-{%- elif desktop == "enlightenment" %}
-  services.xserver.desktopManager.enlightenment.enable = true;
-{%- elif desktop == "labwc" %}
-  programs.labwc.enable = true;
-{%- elif desktop == "pantheon" %}
-  services.desktopManager.pantheon.enable = true;
 {#- Tiling WMs also get what their default configs launch; sway's and i3's modules already ship it. #}
 {%- elif desktop == "niri" %}
   programs.niri.enable = true;
   # X11 apps run through xwayland-satellite, which niri spawns from PATH.
 {%- set wm_packages = "xwayland-satellite alacritty fuzzel swaylock" %}
-{%- elif desktop == "mango" %}
-{%- set wm_packages = "mango foot rofi" %}
 {%- elif desktop == "hyprland" %}
   programs.hyprland.enable = true;
 {%- set wm_packages = "kitty kdePackages.dolphin hyprlauncher" %}
@@ -41,17 +23,6 @@
   services.xserver.windowManager.i3.enable = true;
 {%- elif desktop == "sway" %}
   programs.sway.enable = true;
-{%- elif desktop == "bspwm" %}
-  services.xserver.windowManager.bspwm = {
-    enable = true;
-    # Both default to missing $HOME files, leaving no keybindings; use bspwm's packaged examples.
-    configFile = "${pkgs.bspwm}/share/doc/bspwm/examples/bspwmrc";
-    sxhkd.configFile = "${pkgs.bspwm}/share/doc/bspwm/examples/sxhkdrc";
-  };
-{%- set wm_packages = "rxvt-unicode dmenu" %}
-{%- elif desktop == "xmonad" %}
-  services.xserver.windowManager.xmonad.enable = true;
-{%- set wm_packages = "dmenu" %}
 {%- elif desktop == "dwm" %}
   services.xserver.windowManager.dwm.enable = true;
 {%- set wm_packages = "st dmenu" %}

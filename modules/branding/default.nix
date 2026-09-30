@@ -13,7 +13,6 @@ let
     "start-here-symbolic"
     "start-here-kde"
     "start-here-kde-symbolic"
-    "start-here-lxqt"
     "cinnamon-symbolic"
     "org.xfce.panel.applicationsmenu"
   ];
@@ -21,8 +20,6 @@ let
   desktop = {
     plasma = config.services.desktopManager.plasma6.enable;
     cinnamon = config.services.xserver.desktopManager.cinnamon.enable;
-    mate = config.services.xserver.desktopManager.mate.enable;
-    lxqt = config.services.xserver.desktopManager.lxqt.enable;
     xfce = config.services.xserver.desktopManager.xfce.enable;
   };
 
@@ -37,15 +34,11 @@ let
   wayland =
     config.programs.niri.enable
     || config.programs.sway.enable
-    || config.programs.hyprland.enable
-    || config.programs.labwc.enable
-    || config.programs.wayfire.enable;
+    || config.programs.hyprland.enable;
 
   # Inheriting whatever the desktop already uses leaves every icon but the menu button alone.
   parentIconTheme =
     if desktop.plasma then "breeze-dark"
-    else if desktop.lxqt then "breeze"
-    else if desktop.mate then "menta"
     else if desktop.cinnamon then "gnome"
     else "Adwaita";
 
@@ -146,7 +139,7 @@ in
       pkgs.kdePackages.libplasma
     ];
 
-  # Plasma, LXQt and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
+  # Plasma and Xfce read these as defaults; /etc/xdg comes first in XDG_CONFIG_DIRS.
   # Only the package name goes here: startplasma applies its defaults per user, so the
   # greeter, whose unit trims XDG_DATA_DIRS, keeps an icon theme it can actually find.
   environment.etc."xdg/kdeglobals" = lib.mkIf (desktop.plasma || plasmaGreeter) {
@@ -163,18 +156,6 @@ in
       [Icons]
       Theme=breeze-dark
     '';
-  };
-
-  environment.etc."xdg/lxqt/lxqt.conf" = lib.mkIf desktop.lxqt {
-    source = retheme "balsa-lxqt.conf" "${pkgs.lxqt.lxqt-session}/share/lxqt/lxqt.conf"
-      "'s/^icon_theme=.*/icon_theme=Balsa/'";
-  };
-
-  # pcmanfm-qt paints the LXQt desktop and keeps its own icon theme name.
-  environment.etc."xdg/pcmanfm-qt/lxqt/settings.conf" = lib.mkIf desktop.lxqt {
-    source = retheme "balsa-pcmanfm-qt.conf"
-      "${pkgs.lxqt.pcmanfm-qt}/share/pcmanfm-qt/lxqt/settings.conf"
-      "-e 's|^Wallpaper=.*|Wallpaper=${wallpaper}|' -e 's/^IconThemeName=.*/IconThemeName=Balsa/'";
   };
 
   # xfdesktop has no config until the user picks a wallpaper; its fallback is a build flag.
@@ -224,10 +205,6 @@ in
           icon-theme = "Balsa";
           gtk-theme = "Adwaita-dark";
         };
-        "org/mate/desktop/interface" = {
-          icon-theme = "Balsa";
-          gtk-theme = "Adwaita-dark";
-        };
         "org/gnome/desktop/background" = {
           picture-uri = "file://${wallpaper}";
           picture-uri-dark = "file://${wallpaper}";
@@ -235,10 +212,6 @@ in
         };
         "org/cinnamon/desktop/background" = {
           picture-uri = "file://${wallpaper}";
-          picture-options = "zoom";
-        };
-        "org/mate/desktop/background" = {
-          picture-filename = "${wallpaper}";
           picture-options = "zoom";
         };
       };

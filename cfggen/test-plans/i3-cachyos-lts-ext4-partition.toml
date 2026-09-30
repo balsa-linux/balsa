@@ -1,6 +1,6 @@
 desktop = "i3"
 tuning_profile = "development"
-login_manager = "ly"
+login_manager = "sddm"
 
 [locale]
 locale = "en_US.UTF-8"

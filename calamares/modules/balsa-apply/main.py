@@ -1,7 +1,7 @@
 import libcalamares
 
 
-TILING = {"niri", "hyprland", "mango", "i3", "sway", "bspwm", "xmonad", "dwm"}
+TILING = {"niri", "hyprland", "i3", "sway", "dwm"}
 
 LOGIN_AUTO = {
     "plasma6": "sddm",
@@ -15,7 +15,7 @@ def _resolve_login(choice, desktop):
         return choice
     if desktop in LOGIN_AUTO:
         return LOGIN_AUTO[desktop]
-    return "ly" if desktop in TILING else "sddm"
+    return "sddm"
 
 
 def _resolve_bootloader(choice, firmware, filesystem):

@@ -1,6 +1,6 @@
 desktop = "sway"
 tuning_profile = "development"
-login_manager = "greetd"
+login_manager = "gdm"
 
 [locale]
 locale = "en_US.UTF-8"
