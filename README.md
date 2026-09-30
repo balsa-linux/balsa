@@ -8,7 +8,7 @@ Just note I am not responsible for any damage caused by using this code, includi
 - Default applications [95%]
 - Making the installer beautiful [80%]
 - Default shipping the actual configs [20%]
-- Tuning profiles [0%]
+- Tuning profiles [50%]
 - Put branding EVERYWHERE [90%]
 - Default utilities [20%]
 - Postinstall [0%]

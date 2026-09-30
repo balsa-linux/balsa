@@ -1,14 +1,14 @@
 <div align="center">
 <img alt="balsa logo" src="/modules/branding/balsa-horiz.png" width="33%"/>
 <p>Lightweight, malleable Linux.</p>
-<h3 style="color:red">This repository is incomplete!</h3>
+<h3 style="color:red;">This repository is incomplete!</h3>
 </div>
 <hr>
 <p>Balsa Linux is a new distribution, powered by Nix. It allows for out-of-the-box customisation, is jam-packed with all the latest features, and is designed to be easy to use and modify.</p>
 <div align="center"><h2>Requirements:</h2></div>
 <ul>
 <li>64-bit CPU (x86_64 or aarch64) [IMPORTANT! aarch64 will be missing features compared to the x86_64 version. They will not be included in the aarch64 installer.]</li>
-<li>2-4GB RAM required | 8+GB RAM recommended</li>
+<li>2GB RAM required | 4+GB RAM recommended</li>
 <li>20GB+ of free disk space required | 60GB+ recommended</li>
 <li>An active network connection</li>
 </ul>
