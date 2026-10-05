@@ -24,5 +24,8 @@
 
     packages.x86_64-linux.configgen =
       (nixpkgs.legacyPackages.x86_64-linux.callPackage ./cfggen {});
+
+    checks.x86_64-linux.parent-disk =
+      import ./tests/parent-disk.nix nixpkgs.legacyPackages.x86_64-linux;
   };
 }

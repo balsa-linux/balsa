@@ -13,11 +13,14 @@ SUPPORTED_FS = ("btrfs", "ext4", "xfs", "zfs")
 
 
 def _parent_disk(device):
-    disk = device.rstrip("0123456789")
-    # nvme0n1p2 and mmcblk0p1 separate the partition number with a "p"; sda2 does not.
-    if disk.endswith("p") and len(disk) > 1 and disk[-2].isdigit():
-        disk = disk[:-1]
-    return disk
+    name = os.path.basename(device)
+    sysfs = "/sys/class/block/{}".format(name)
+    if not os.path.isdir(sysfs):
+        raise ValueError("{} has no sysfs entry at {}".format(device, sysfs))
+    # Only a partition carries this attribute, and sysfs nests it under the disk that owns it.
+    if not os.path.exists(sysfs + "/partition"):
+        return device
+    return "/dev/{}".format(os.path.basename(os.path.dirname(os.path.realpath(sysfs))))
 
 
 def _swap_size_gib(device):
@@ -56,7 +59,11 @@ def run():
         return ("Disk selection missing",
                 "The partition mounted at / has no device path in globalstorage.")
 
-    disk = _parent_disk(root["device"])
+    try:
+        disk = _parent_disk(root["device"])
+    except ValueError as e:
+        return ("Disk selection invalid",
+                "Could not identify the disk holding {}: {}".format(root["device"], e))
     luks_name = ""
     if root.get("fsName") in ("luks", "luks2"):
         luks_name = root.get("luksMapperName") or "cryptroot"
