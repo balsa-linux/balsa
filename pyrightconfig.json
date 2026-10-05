@@ -1,0 +1,5 @@
+{
+  "typeCheckingMode": "standard",
+  "reportMissingModuleSource": "none",
+  "include": ["calamares/modules", "calamares/check-bundle.py"]
+}
