@@ -105,9 +105,6 @@ pub enum SwapMode {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct BootConfig {
-    pub loader: BootLoader,
-    #[serde(default)]
-    pub dual_boot: bool,
     #[serde(default)]
     pub legacy_bios: bool,
     #[serde(default = "default_esp")]
@@ -116,33 +113,6 @@ pub struct BootConfig {
 
 fn default_esp() -> String {
     "/boot".to_string()
-}
-
-impl BootConfig {
-    /// systemd-boot handles neither, so it falls back to GRUB; explicit picks stand
-    pub fn effective_loader(&self) -> BootLoader {
-        match self.loader {
-            BootLoader::SystemdBoot if self.dual_boot || self.legacy_bios => BootLoader::Grub,
-            other => other,
-        }
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "kebab-case")]
-pub enum BootLoader {
-    SystemdBoot,
-    Grub,
-    /// Only offered for btrfs installs since Limine lets you reap the benefits of btrfs
-    Limine,
-}
-
-impl BootLoader {
-    pub const ALL: [BootLoader; 3] = [
-        BootLoader::SystemdBoot,
-        BootLoader::Grub,
-        BootLoader::Limine,
-    ];
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -415,14 +385,6 @@ impl BalsaInstallPlan {
         }
         if self.accounts.root_enabled && self.accounts.root_hashed_password.is_none() {
             errs.push("root_enabled is set but root_hashed_password is missing".to_string());
-        }
-        if self.boot.effective_loader() == BootLoader::Limine
-            && self.disk.filesystem != Filesystem::Btrfs
-        {
-            errs.push(format!(
-                "Limine is only offered for btrfs installs, not {:?}",
-                self.disk.filesystem
-            ));
         }
         match &self.network.host_id {
             Some(id) if id.len() != 8 || !id.chars().all(|c| c.is_ascii_hexdigit()) => {

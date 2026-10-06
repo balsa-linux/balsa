@@ -46,7 +46,7 @@ struct DiskoArgs {
     /// Required for partition and file swap.
     #[arg(long)]
     swap_size_gib: Option<u32>,
-    /// Adds the BIOS boot partition GRUB needs on legacy firmware.
+    /// Adds the BIOS boot partition Limine needs on legacy firmware.
     #[arg(long)]
     legacy_bios: bool,
     #[arg(long, default_value = "/boot")]

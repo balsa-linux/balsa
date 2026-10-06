@@ -1,4 +1,3 @@
-{%- if effective_loader == "limine" %}
   # The ESP is 1 GiB and each generation copies a kernel and initrd into it.
   boot.loader.limine = {
     enable = true;
@@ -6,6 +5,10 @@
 {%- if boot.legacy_bios %}
     biosSupport = true;
     biosDevice = "{{ disk.disk | nix }}";
+    # On GPT, limine bios-install wants the 1-based index of disko's EF02 partition, which it creates first.
+    partitionIndex = 1;
+    # Defaults to true on x86_64, which would install the EFI files a BIOS machine never reads.
+    efiSupport = false;
 {%- else %}
     efiSupport = true;
 {%- endif %}
@@ -13,30 +16,6 @@
 {%- if not boot.legacy_bios %}
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "{{ boot.esp_mount | nix }}";
-{%- endif %}
-{%- elif effective_loader == "systemd-boot" %}
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.configurationLimit = 10;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "{{ boot.esp_mount | nix }}";
-{%- else %}
-  boot.loader.grub = {
-    enable = true;
-    configurationLimit = 10;
-{%- if boot.legacy_bios %}
-    # boot.loader.grub.devices comes from disko's EF02 partition.
-{%- else %}
-    efiSupport = true;
-    device = "nodev";
-{%- endif %}
-{%- if boot.dual_boot %}
-    useOSProber = true;
-{%- endif %}
-  };
-{%- if not boot.legacy_bios %}
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "{{ boot.esp_mount | nix }}";
-{%- endif %}
 {%- endif %}
 {%- if disk.filesystem == "btrfs" %}
   services.btrfs.autoScrub.enable = true;

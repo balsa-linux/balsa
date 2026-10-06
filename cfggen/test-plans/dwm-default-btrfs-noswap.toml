@@ -18,8 +18,6 @@ type = "guided"
 type = "none"
 
 [boot]
-loader = "systemd-boot"
-dual_boot = true
 legacy_bios = false
 
 [hardware]

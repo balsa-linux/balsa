@@ -132,7 +132,6 @@ pub fn generate(plan: &BalsaInstallPlan) -> Result<GenerationResult, Error> {
         .iter()
         .any(|g| matches!(g, Gpu::NvidiaProprietary | Gpu::NvidiaOpen));
 
-    ctx.insert("effective_loader", &plan.boot.effective_loader());
     ctx.insert("login", &plan.login_manager());
     ctx.insert("desktop_is_tiling", &plan.desktop.is_tiling());
     ctx.insert("needs_xserver", &plan.desktop.needs_xserver());

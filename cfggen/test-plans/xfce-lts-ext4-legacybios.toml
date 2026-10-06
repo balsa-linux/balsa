@@ -17,8 +17,6 @@ type = "guided"
 type = "none"
 
 [boot]
-loader = "grub"
-dual_boot = false
 legacy_bios = true
 
 [hardware]

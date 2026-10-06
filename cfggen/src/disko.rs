@@ -4,7 +4,7 @@ use crate::Error;
 use crate::generate::{engine, tidy};
 use crate::plan::DiskoConfig;
 
-/// Renders disko-config.nix alone; `legacy_bios` adds GRUB's BIOS partition, `esp_mount` places the ESP.
+/// Renders disko-config.nix alone; `legacy_bios` adds Limine's BIOS partition, `esp_mount` places the ESP.
 pub fn generate_disko_config(
     disk: &DiskoConfig,
     legacy_bios: bool,

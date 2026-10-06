@@ -231,7 +231,7 @@ in
     serviceConfig.ExecStart = "${pkgs.swaybg}/bin/swaybg --mode fill --image ${wallpaper}";
   };
 
-  # A non-nixos distroId drops nixos.org's URLs; systemd-boot, GRUB and Limine title entries with distroName.
+  # A non-nixos distroId drops nixos.org's URLs; Limine titles its entries with distroName.
   system.nixos = {
     distroId = "balsa";
     distroName = "Balsa";
@@ -265,7 +265,7 @@ in
     themePackages = [ plymouthTheme ];
   };
 
-  # nixpkgs points Limine at a nixos-artwork wallpaper; the option exists even when Limine is off.
+  # nixpkgs otherwise points Limine at a nixos-artwork wallpaper.
   boot.loader.limine.style.wallpapers = [ wallpaper ];
 
   boot.consoleLogLevel = lib.mkIf quietBoot 3;

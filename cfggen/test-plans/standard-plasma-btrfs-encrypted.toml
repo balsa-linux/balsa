@@ -21,8 +21,6 @@ type = "partition"
 size_gib = 8
 
 [boot]
-loader = "systemd-boot"
-dual_boot = false
 legacy_bios = false
 
 [hardware]

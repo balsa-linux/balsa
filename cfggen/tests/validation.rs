@@ -5,7 +5,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::thread;
 
-use balsa_flakegen::plan::{BalsaInstallPlan, BootLoader, DesktopChoice, KernelChoice, SwapMode};
+use balsa_flakegen::plan::{BalsaInstallPlan, DesktopChoice, KernelChoice, SwapMode};
 
 fn plan_paths() -> Vec<PathBuf> {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("test-plans");
@@ -200,10 +200,10 @@ fn fixtures_cover_every_kernel_filesystem_swap_and_encryption() {
         assert!(found, "no fixture uses swap mode {want}");
     }
 
-    for loader in BootLoader::ALL {
+    for want in [true, false] {
         assert!(
-            plans.iter().any(|p| p.boot.effective_loader() == loader),
-            "no fixture boots with {loader:?}"
+            plans.iter().any(|p| p.boot.legacy_bios == want),
+            "no fixture has legacy_bios = {want}"
         );
     }
 
