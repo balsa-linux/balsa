@@ -1,5 +1,3 @@
-pub mod cachyos;
-
 use std::collections::BTreeMap;
 
 use tera::{Context, Kwargs, State, Tera};
@@ -9,10 +7,6 @@ use crate::{Error, GeneratedConfig, GenerationResult};
 
 // Fragments first: `include` is resolved when a template is added.
 const TEMPLATES: &[(&str, &str)] = &[
-    (
-        "cachyos.nix.j2",
-        include_str!("../templates/cachyos.nix.j2"),
-    ),
     (
         "disko-fs.nix.j2",
         include_str!("../templates/disko-fs.nix.j2"),
@@ -98,17 +92,6 @@ pub fn generate(plan: &BalsaInstallPlan) -> Result<GenerationResult, Error> {
 
     let mut warnings = Vec::new();
     let mut ctx = Context::from_serialize(plan).map_err(Error::Template)?;
-
-    if let KernelChoice::CachyOs {
-        variant,
-        nixpkgs_policy,
-        cache,
-    } = &plan.kernel
-    {
-        let (spec, mut w) = cachyos::spec(*variant, *nixpkgs_policy, cache);
-        warnings.append(&mut w);
-        ctx.insert("cachyos", &spec);
-    }
 
     if let PartitionScheme::Manual { .. } = &plan.disk.scheme {
         warnings.push(

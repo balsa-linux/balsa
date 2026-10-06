@@ -6,6 +6,4 @@
   boot.kernelPackages = pkgs.linuxPackages_zen;
 {%- elif kernel.type == "xanmod" %}
   boot.kernelPackages = pkgs.linuxPackages_xanmod_latest;
-{%- elif kernel.type == "cachy-os" %}
-{% include "cachyos.nix.j2" %}
 {%- endif %}
