@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use tera::{Context, Kwargs, State, Tera};
 
-use crate::plan::{BalsaInstallPlan, Filesystem, Gpu, KernelChoice, PartitionScheme, SwapMode};
+use crate::plan::{BalsaInstallPlan, Filesystem, Gpu, PartitionScheme, SwapMode};
 use crate::{Error, GeneratedConfig, GenerationResult};
 
 // Fragments first: `include` is resolved when a template is added.

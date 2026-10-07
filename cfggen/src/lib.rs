@@ -30,7 +30,7 @@ impl GeneratedConfig {
 #[derive(Debug, Clone)]
 pub struct GenerationResult {
     pub config: GeneratedConfig,
-    /// Non-fatal notes for a UI, e.g. a CachyOS kernel that will miss the cache
+    /// Non-fatal notes for a UI
     pub warnings: Vec<String>,
 }
 

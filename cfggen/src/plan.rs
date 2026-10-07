@@ -195,67 +195,11 @@ pub enum KernelChoice {
     Lts,
     Zen,
     Xanmod,
-    CachyOs {
-        /// cachyos kernels have attributes that require extra configuration
-        variant: CachyVariant,
-        #[serde(default)]
-        nixpkgs_policy: CachyNixpkgsPolicy,
-        #[serde(default)]
-        cache: CachyosCache,
-    },
 }
 
 impl KernelChoice {
     pub fn is_x64_only(&self) -> bool {
         !matches!(self, KernelChoice::Default | KernelChoice::Lts)
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "kebab-case")]
-pub enum CachyVariant {
-    Latest,
-    Lts,
-    Bore, // based on latest but uses BORE scheduler
-}
-
-impl CachyVariant {
-    /// Attribute suffix under pkgs.cachyosKernels.linuxPackages-cachyos-yaddayadda.
-    pub fn attr_suffix(self) -> &'static str {
-        match self {
-            CachyVariant::Latest => "latest",
-            CachyVariant::Lts => "lts",
-            CachyVariant::Bore => "bore",
-        }
-    }
-}
-
-/// Which of upstream's two overlays to use
-#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "kebab-case")]
-pub enum CachyNixpkgsPolicy {
-    /// Upstream's nixpkgs revision, the cache hits, but nixpkgs.config misses the kernel
-    #[default]
-    Pinned,
-    /// balsa nixpkgs: nixpkgs.config applies, but the kernel may be compiled
-    SystemNixpkgs,
-}
-
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(deny_unknown_fields)]
-pub struct CachyosCache {
-    pub substituter: String,
-    pub trusted_public_key: String,
-}
-
-impl Default for CachyosCache {
-    fn default() -> Self {
-        // From the xddxdd/nix-cachyos-kernel README and its flake nixConfig
-        Self {
-            substituter: "https://attic.xuyh0120.win/lantian".to_string(),
-            trusted_public_key: "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
-                .to_string(),
-        }
     }
 }
 
