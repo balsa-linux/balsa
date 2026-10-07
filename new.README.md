@@ -35,7 +35,7 @@
 <div align="center"><h2>Planned:</h2></div>
 <ul>
 <li>CachyOS kernel support for increased performance</li>
-<li>Offer browser choice during install between LibreWolf, Helium, Zen, Firefox, and Chromium.</li>
+<li>Offer browser choice during postinstall between LibreWolf, Helium, Zen, Firefox, and Chromium.</li>
 <li>Media creation tool to build ISOs and create installation media.</li>
 <li>H-Balsa, a hardened set of configs, utils, and modules for Balsa to achieve an OpenBSD or greater level of security.</li>
 </ul>
