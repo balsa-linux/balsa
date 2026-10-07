@@ -28,18 +28,11 @@ gpu = ["intel"]
 firmware = "auto"
 
 [network]
-hostname = "i3-cachyos-lts-ext4-partition"
+hostname = "i3-lts-ext4-partition"
 backend = "network-manager"
 
 [kernel]
-type = "cachy-os"
-variant = "lts"
-nixpkgs_policy = "pinned"
-
-# From the xddxdd/nix-cachyos-kernel README and flake nixConfig.
-[kernel.cache]
-substituter = "https://attic.xuyh0120.win/lantian"
-trusted_public_key = "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+type = "lts"
 
 
 [accounts]

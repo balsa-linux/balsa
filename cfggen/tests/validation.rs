@@ -5,7 +5,9 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 use std::thread;
 
-use balsa_flakegen::plan::{BalsaInstallPlan, DesktopChoice, KernelChoice, SwapMode};
+use balsa_flakegen::plan::{
+    BalsaInstallPlan, DesktopChoice, Filesystem, KernelChoice, PartitionScheme, SwapMode,
+};
 
 fn plan_paths() -> Vec<PathBuf> {
     let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("test-plans");
@@ -159,23 +161,12 @@ fn fixtures_cover_every_desktop() {
 fn fixtures_cover_every_kernel_filesystem_swap_and_encryption() {
     let plans: Vec<_> = plan_paths().iter().map(|p| load(p)).collect();
 
-    for want in [
-        "default",
-        "lts",
-        "zen",
-        "xanmod",
-        "cachy-os-latest",
-        "cachy-os-lts",
-        "cachy-os-bore",
-    ] {
+    for want in ["default", "lts", "zen", "xanmod"] {
         let found = plans.iter().any(|p| match &p.kernel {
             KernelChoice::Default => want == "default",
             KernelChoice::Lts => want == "lts",
             KernelChoice::Zen => want == "zen",
             KernelChoice::Xanmod => want == "xanmod",
-            KernelChoice::CachyOs { variant, .. } => {
-                want == format!("cachy-os-{}", variant.attr_suffix())
-            }
         });
         assert!(found, "no fixture uses kernel {want}");
     }
@@ -218,40 +209,19 @@ fn fixtures_cover_every_kernel_filesystem_swap_and_encryption() {
 }
 
 #[test]
-fn cachyos_fixtures_warn_and_others_stay_quiet() {
-    let mut compiles = Vec::new();
-    let mut cachyos = Vec::new();
-    let mut warns_at_all = Vec::new();
+fn only_manual_disko_and_zfs_warn() {
     for path in plan_paths() {
-        let name = path.file_stem().unwrap().to_string_lossy().to_string();
         let plan = load(&path);
-        let result = balsa_flakegen::generate(&plan).unwrap();
-        if matches!(plan.kernel, KernelChoice::CachyOs { .. }) {
-            cachyos.push(name.clone());
-        }
-        if !result.warnings.is_empty() {
-            warns_at_all.push(name.clone());
-        }
-        if result
-            .warnings
-            .iter()
-            .any(|w| w.contains("builds from source"))
-        {
-            compiles.push(name);
-        }
+        let expected = matches!(plan.disk.scheme, PartitionScheme::Manual { .. })
+            || plan.disk.filesystem == Filesystem::Zfs;
+        let warned = !balsa_flakegen::generate(&plan).unwrap().warnings.is_empty();
+        assert_eq!(
+            warned,
+            expected,
+            "{}: warned = {warned}, expected {expected}",
+            path.file_stem().unwrap().to_string_lossy()
+        );
     }
-
-    assert_eq!(compiles, vec!["gaming-cachyos-hyprland".to_string()]);
-    // Every CachyOS pick warns; the only other warning paths are manual disko and ZFS.
-    for name in &cachyos {
-        assert!(warns_at_all.contains(name), "{name} produced no warning");
-    }
-    let mut expected = cachyos;
-    expected.push("plasma-manual-scheme-ext4".to_string());
-    expected.push("plasma-lts-zfs-encrypted".to_string());
-    expected.sort();
-    warns_at_all.sort();
-    assert_eq!(warns_at_all, expected);
 }
 
 #[test]

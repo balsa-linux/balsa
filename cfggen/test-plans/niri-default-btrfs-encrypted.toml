@@ -1,4 +1,4 @@
-desktop = "hyprland"
+desktop = "niri"
 tuning_profile = "gaming"
 
 [locale]
@@ -10,35 +10,30 @@ timezone = "America/New_York"
 disk = "/dev/vda"
 filesystem = "btrfs"
 
+[disk.encryption]
+luks_name = "cryptroot"
+
 [disk.scheme]
 type = "guided"
 
 [disk.swap]
-type = "file"
-size_gib = 16
+type = "zram"
 
 [boot]
 legacy_bios = false
 
 [hardware]
 arch = "x86_64-linux"
-cpu = "intel"
-gpu = ["nvidia-open"]
-firmware = "all"
+cpu = "amd"
+gpu = ["amd"]
+firmware = "auto"
 
 [network]
-hostname = "gaming-cachyos-hyprland"
+hostname = "niri-default-btrfs-encrypted"
 backend = "network-manager"
 
 [kernel]
-type = "cachy-os"
-variant = "bore"
-nixpkgs_policy = "system-nixpkgs"
-
-# From the xddxdd/nix-cachyos-kernel README and flake nixConfig.
-[kernel.cache]
-substituter = "https://attic.xuyh0120.win/lantian"
-trusted_public_key = "lantian:EeAUQ+W+6r7EtwnmYjeVwx5kOGEBpjlBfPlzGlTNvHc="
+type = "default"
 
 
 [accounts]

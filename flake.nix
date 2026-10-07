@@ -5,10 +5,9 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     disko.url = "github:nix-community/disko/latest";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    cachyos-kernel.url = "github:xddxdd/nix-cachyos-kernel/release";
   };
 
-  outputs = { self, nixpkgs, disko, cachyos-kernel, ... }: {
+  outputs = { self, nixpkgs, disko, ... }: {
     nixosConfigurations.iso = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = { inherit self disko; };
