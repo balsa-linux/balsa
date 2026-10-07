@@ -20,9 +20,6 @@ KERNELS = {
     "lts": {"type": "lts"},
     "zen": {"type": "zen"},
     "xanmod": {"type": "xanmod"},
-    "cachyos": {"type": "cachy-os", "variant": "latest"},
-    "cachyos-lts": {"type": "cachy-os", "variant": "lts"},
-    "cachyos-bore": {"type": "cachy-os", "variant": "bore"},
 }
 
 CPUS = {"intel": "intel", "amd": "amd", "unknown": "other"}
@@ -205,7 +202,7 @@ def run():
     if result.returncode != 0:
         return ("config generation failed", result.stderr)
     for line in result.stderr.splitlines():
-        # configgen warns about things like uncached CachyOS kernels; do not swallow them.
+        # configgen warns about manual partitioning and the ZFS pool export; do not swallow them.
         libcalamares.utils.warning(line)
 
     gs.insert("balsaConfigPath", out)
