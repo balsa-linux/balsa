@@ -14,7 +14,7 @@ filesystem = "ext4"
 type = "guided"
 
 [disk.swap]
-type = "file"
+type = "partition"
 size_gib = 4
 
 [boot]
@@ -27,7 +27,7 @@ gpu = ["intel"]
 firmware = "auto"
 
 [network]
-hostname = "gnome-lts-ext4-swapfile"
+hostname = "gnome-lts-ext4-swap"
 backend = "network-manager"
 
 [kernel]

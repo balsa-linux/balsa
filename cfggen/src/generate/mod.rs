@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use tera::{Context, Kwargs, State, Tera};
 
-use crate::plan::{BalsaInstallPlan, Filesystem, Gpu, PartitionScheme, SwapMode};
+use crate::plan::{BalsaInstallPlan, Filesystem, Gpu, PartitionScheme};
 use crate::{Error, GeneratedConfig, GenerationResult};
 
 // Fragments first: `include` is resolved when a template is added.
@@ -124,18 +124,6 @@ pub fn generate(plan: &BalsaInstallPlan) -> Result<GenerationResult, Error> {
         "allow_unfree",
         &(has_nvidia || plan.hardware.firmware == crate::plan::FirmwareMode::All),
     );
-
-    if let SwapMode::File { size_gib } = plan.disk.swap {
-        ctx.insert("swapfile_mib", &(u64::from(size_gib) * 1024));
-        ctx.insert(
-            "swapfile_path",
-            &match plan.disk.filesystem {
-                Filesystem::Btrfs => "/swap/swapfile",
-                Filesystem::Ext4 | Filesystem::Xfs => "/swapfile",
-                Filesystem::Zfs => unreachable!("validate() rejects file swap on ZFS"),
-            },
-        );
-    }
 
     let tera = engine().map_err(Error::Template)?;
     let mut files = BTreeMap::new();

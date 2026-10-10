@@ -14,7 +14,7 @@ filesystem = "xfs"
 type = "guided"
 
 [disk.swap]
-type = "file"
+type = "partition"
 size_gib = 4
 
 [boot]
@@ -27,7 +27,7 @@ gpu = ["intel"]
 firmware = "auto"
 
 [network]
-hostname = "gnome-default-xfs-swapfile"
+hostname = "gnome-default-xfs-swap"
 backend = "network-manager"
 
 [kernel]

@@ -178,13 +178,12 @@ fn fixtures_cover_every_kernel_filesystem_swap_and_encryption() {
         );
     }
 
-    for want in ["none", "partition", "file", "zram"] {
+    for want in ["none", "partition", "zram"] {
         let found = plans.iter().any(|p| {
             matches!(
                 (&p.disk.swap, want),
                 (SwapMode::None, "none")
                     | (SwapMode::Partition { .. }, "partition")
-                    | (SwapMode::File { .. }, "file")
                     | (SwapMode::Zram, "zram")
             )
         });

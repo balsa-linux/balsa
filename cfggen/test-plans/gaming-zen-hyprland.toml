@@ -14,7 +14,7 @@ filesystem = "btrfs"
 type = "guided"
 
 [disk.swap]
-type = "file"
+type = "partition"
 size_gib = 16
 
 [boot]

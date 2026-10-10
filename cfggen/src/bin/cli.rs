@@ -67,7 +67,6 @@ enum FsArg {
 #[derive(Clone, ValueEnum)]
 enum SwapArg {
     Partition,
-    File,
     Zram,
     None,
 }
@@ -112,14 +111,13 @@ fn run_plan(plan_path: &Path, out: &Path) -> Result<(), String> {
 fn run_disko(args: DiskoArgs) -> Result<(), String> {
     let swap = match (args.swap, args.swap_size_gib) {
         (SwapArg::Partition, Some(size_gib)) => SwapMode::Partition { size_gib },
-        (SwapArg::File, Some(size_gib)) => SwapMode::File { size_gib },
         (SwapArg::Zram, None) => SwapMode::Zram,
         (SwapArg::None, None) => SwapMode::None,
-        (SwapArg::Partition | SwapArg::File, None) => {
-            return Err("--swap-size-gib is required for partition and file swap".to_string());
+        (SwapArg::Partition, None) => {
+            return Err("--swap-size-gib is required for partition swap".to_string());
         }
         (SwapArg::Zram | SwapArg::None, Some(_)) => {
-            return Err("--swap-size-gib only applies to partition and file swap".to_string());
+            return Err("--swap-size-gib only applies to partition swap".to_string());
         }
     };
     let cfg = DiskoConfig {

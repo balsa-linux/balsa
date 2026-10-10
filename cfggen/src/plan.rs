@@ -98,7 +98,6 @@ impl Filesystem {
 pub enum SwapMode {
     None,
     Partition { size_gib: u32 },
-    File { size_gib: u32 },
     Zram,
 }
 
@@ -365,10 +364,7 @@ impl DiskoConfig {
         {
             errs.push(format!("invalid luks_name {:?}", enc.luks_name));
         }
-        if self.filesystem == Filesystem::Zfs && matches!(self.swap, SwapMode::File { .. }) {
-            errs.push("ZFS cannot host a swap file; use partition or zram swap".to_string());
-        }
-        if let SwapMode::Partition { size_gib: 0 } | SwapMode::File { size_gib: 0 } = self.swap {
+        if let SwapMode::Partition { size_gib: 0 } = self.swap {
             errs.push("swap size_gib must be at least 1".to_string());
         }
         if !self.disk.starts_with('/') {

@@ -82,7 +82,7 @@ fn bad_disko_input_is_rejected() {
             &["--swap", "none", "--luks-name", "has space"],
             "invalid luks_name",
         ),
-        (&["--swap", "file", "--swap-size-gib", "0"], "at least 1"),
+        (&["--swap", "partition", "--swap-size-gib", "0"], "at least 1"),
     ];
     for (extra, want) in cases {
         let args: Vec<&str> = base.iter().chain(extra.iter()).copied().collect();
@@ -159,25 +159,4 @@ fn disko_subcommand_handles_xfs_and_zfs() {
     ] {
         assert!(nix.contains(want), "missing {want} in:\n{nix}");
     }
-
-    let rejected = out_dir("zfs-swapfile");
-    let o = cli(&[
-        "disko",
-        "--disk",
-        "/dev/sda",
-        "--fs",
-        "zfs",
-        "--swap",
-        "file",
-        "--swap-size-gib",
-        "4",
-        "--out",
-        rejected.to_str().unwrap(),
-    ]);
-    assert!(!o.status.success());
-    assert!(
-        stderr(&o).contains("ZFS cannot host a swap file"),
-        "{}",
-        stderr(&o)
-    );
 }

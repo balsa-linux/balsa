@@ -14,12 +14,6 @@
                   mountpoint = "/nix";
                   mountOptions = [ "compress=zstd" "noatime" ];
                 };
-{%- if disk.swap.type == "file" %}
-                "/swap" = {
-                  mountpoint = "/swap";
-                  mountOptions = [ "noatime" ];
-                };
-{%- endif %}
               };
 {%- elif disk.filesystem == "zfs" %}
               type = "zfs";
