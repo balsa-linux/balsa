@@ -43,7 +43,7 @@ struct DiskoArgs {
     luks_name: Option<String>,
     #[arg(long, value_enum)]
     swap: SwapArg,
-    /// Required for partition and file swap.
+    /// Required for partition swap.
     #[arg(long)]
     swap_size_gib: Option<u32>,
     /// Adds the BIOS boot partition Limine needs on legacy firmware.

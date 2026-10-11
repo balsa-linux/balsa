@@ -5,8 +5,8 @@ import sys
 
 import yaml
 
-CONFIG_NEEDED = {"welcome", "partition", "mount", "unpackfs", "users",
-                 "finished", "packagechooser", "locale", "keyboard"}
+CONFIG_NEEDED = {"welcome", "partition", "users", "finished", "packagechooser",
+                 "locale", "keyboard"}
 
 
 def main(argv):
