@@ -1,4 +1,8 @@
-{ stdenvNoCC, calamares-nixos-extensions }:
+{ lib, stdenvNoCC, calamares-nixos-extensions }:
+
+let
+  version = import ../version.nix;
+in
 
 # calamares-nixos reads this package's XDG dirs, so an overlay swaps the installer config.
 stdenvNoCC.mkDerivation {
@@ -24,6 +28,9 @@ stdenvNoCC.mkDerivation {
 
     substituteInPlace $out/etc/calamares/settings.conf \
       --replace-fail @modulesDir@ $out/lib/calamares/modules
+    substituteInPlace $out/share/calamares/branding/balsa/branding.desc \
+      --replace-fail @version@ ${version} \
+      --replace-fail @shortVersion@ ${lib.versions.major version}
 
     runHook postInstall
   '';

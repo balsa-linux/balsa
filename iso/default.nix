@@ -1,6 +1,7 @@
 { config, lib, modulesPath, pkgs, self, disko, ... }:
 
 let
+  version = import ../version.nix;
   system = pkgs.stdenv.hostPlatform.system;
   artwork = ../calamares/branding/balsa/welcome.png;
 
@@ -87,10 +88,10 @@ in
   # Calamares and i3 fall back to bitmap fonts without a real sans family installed.
   fonts.packages = [ pkgs.noto-fonts ];
 
-  # Boot menu reads "Balsa 27.0a Installer"; the ISO module sets baseName at normal priority.
-  system.nixos.label = "27.0a";
-  image.baseName = lib.mkForce "balsa-27.0a-x86_64";
-  isoImage.volumeID = "balsa-27.0a-x86_64";
+  # Boot menu reads "Balsa <version> Installer"; the ISO module sets baseName at normal priority.
+  system.nixos.label = version;
+  image.baseName = lib.mkForce "balsa-${version}-x86_64";
+  isoImage.volumeID = "balsa-${version}-x86_64";
   isoImage.grubTheme = grubTheme;
   isoImage.splashImage = biosSplash;
   # nixpkgs' default with its light colours swapped for the artwork's; FG/BG are AARRGGBB.

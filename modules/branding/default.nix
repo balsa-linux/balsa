@@ -1,6 +1,8 @@
 { config, lib, pkgs, ... }:
 
 let
+  version = import ../../version.nix;
+
   # KDE Info Centre and friends resolve os-release's LOGO as an icon-theme name.
   logoIcon = pkgs.runCommand "balsa-logo-icon" { } ''
     install -Dm644 ${../../calamares/branding/balsa/logo.png} \
@@ -238,11 +240,12 @@ in
     vendorId = "balsa";
     vendorName = "Balsa";
     extraOSReleaseArgs = {
-      VERSION = "27.0a";
-      VERSION_ID = "27.0a";
+      VERSION = version;
+      # os-release requires VERSION_ID to be lower-case.
+      VERSION_ID = lib.toLower version;
       VERSION_CODENAME = "27";
-      CPE_NAME = "cpe:/o:balsa:balsa:27.0a";
-      PRETTY_NAME = "Balsa 27.0a";
+      CPE_NAME = "cpe:/o:balsa:balsa:${lib.toLower version}";
+      PRETTY_NAME = "Balsa ${version}";
       LOGO = "balsa";
       HOME_URL = "https://balsa.aylah.dev";
       SUPPORT_URL = "https://github.com/balsa-linux/balsa/issues";
