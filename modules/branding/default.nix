@@ -243,7 +243,7 @@ in
       VERSION = version;
       # os-release requires VERSION_ID to be lower-case.
       VERSION_ID = lib.toLower version;
-      VERSION_CODENAME = "27";
+      VERSION_CODENAME = lib.toLower version;
       CPE_NAME = "cpe:/o:balsa:balsa:${lib.toLower version}";
       PRETTY_NAME = "Balsa ${version}";
       LOGO = "balsa";
