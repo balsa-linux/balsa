@@ -26,5 +26,8 @@
 
     checks.x86_64-linux.parent-disk =
       import ./tests/parent-disk.nix nixpkgs.legacyPackages.x86_64-linux;
+
+    checks.x86_64-linux.apply-resolution =
+      import ./tests/apply-resolution.nix nixpkgs.legacyPackages.x86_64-linux;
   };
 }
