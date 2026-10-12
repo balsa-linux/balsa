@@ -1,5 +1,8 @@
 desktop = "plasma"
 tuning_profile = "standard"
+nixpkgs_ref = "b1b875982b17dabde9b4a37f3e229e74913e6db3"
+balsa_ref = "3ff5f3b97221f0b4b2704b898f585e18b80ac757"
+state_version = "26.05"
 
 [locale]
 locale = "en_US.UTF-8"

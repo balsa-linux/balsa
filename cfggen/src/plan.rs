@@ -21,7 +21,7 @@ pub struct BalsaInstallPlan {
     pub tuning_specialisations: Vec<TuningProfile>,
     #[serde(default = "default_nixpkgs_ref")]
     pub nixpkgs_ref: String,
-    /// Balsa commit whose nixosModules the system imports; fixtures use None, having no pushed commit.
+    /// Balsa commit whose nixosModules the system imports; None skips the import.
     #[serde(default)]
     pub balsa_ref: Option<String>,
     #[serde(default = "default_state_version")]
