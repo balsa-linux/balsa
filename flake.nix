@@ -29,5 +29,8 @@
 
     checks.x86_64-linux.apply-resolution =
       import ./tests/apply-resolution.nix nixpkgs.legacyPackages.x86_64-linux;
+
+    checks.x86_64-linux.check-bundle =
+      import ./tests/check-bundle.nix nixpkgs.legacyPackages.x86_64-linux;
   };
 }
